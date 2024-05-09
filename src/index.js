@@ -1,0 +1,43 @@
+const express = require('express');
+const morgan = require('morgan');
+const path = require('path');
+const exphbs = require('express-handlebars');
+// inicializaciones 
+const app = express();
+
+// configuraciones que necesita el servidor de express
+app.set('port', process.env.PORT || 4000); //si existe un puerto en el sistema cogelo, si no pilla el 4k
+app.set('views', path.join(__dirname, 'views'));
+app.engine('.hbs', exphbs({
+  defaultLayout: 'main',
+  layoutsDir: path.join(app.get('views'), 'layouts'),
+  partialsDir: path.join(app.get('views'), 'partials'),
+  extname: '.hbs',
+  helpers: require('./lib/handlebars')
+}))
+app.set('view engine', '.hbs');
+
+// middlewares , o sea funciones que se ejecutan cada ves que un usuario envia una peticion.
+// ejemplo de eso es morgan que esta instalado en package.json eso te muestra las peticion en consolas y tales
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended:falsed}));
+app.use(express.json());
+
+// variables globales 
+app.use((req, res, next) => {
+    next();
+});
+
+//rutas 
+app.use(require('./routes'))
+app.use(require('./routes/authentication'))
+app.use(require('/links','./routes/links'))
+
+// public
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+// empezar el servidor 
+app.listen(app.get('port'), ()  => {
+    console.log('Server on port', app.get('port'));
+}) //aca ya iniciamos el servidor en algun puerto o el 4k, 
