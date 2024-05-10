@@ -2,9 +2,16 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const {engine} = require('express-handlebars');
+const passport = require('passport');
+
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
+
+
+const  {database} = require('./keys');
 // inicializaciones 
 const app = express();
-
+require('./lib/passport');
 // configuraciones que necesita el servidor de express
 app.set('port', process.env.PORT || 4000); //si existe un puerto en el sistema cogelo, si no pilla el 4k
 app.set('views', path.join(__dirname, 'views'));
@@ -22,6 +29,16 @@ app.set('view engine', '.hbs');
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+app.use(session({
+  secret: 'team4mysqlnodemysql',
+  resave: false,
+  saveUninitialized: false,
+  store: new MySQLStore(database)
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // variables globales 
 app.use((req, res, next) => {

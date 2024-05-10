@@ -11,6 +11,8 @@ create table users(
 alter table users
     modify column id INT(11) NOT NULL AUTO_INCREMENT =1;
 
+
+
 CREATE TABLE Producto (
     Código INT PRIMARY KEY,
     Nombre VARCHAR(100),
