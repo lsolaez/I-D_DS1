@@ -22,6 +22,27 @@ passport.use('local.signup', new LocalStrategy({
     return done(null, newUser);
   }));
 
+passport.use('local.signin', new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true
+  }, async (req, username, password, done) => {
+    const rows = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+    if (rows.length > 0) {
+      const user = rows[0];
+      const validPassword = await helpers.matchPassword(password, user.password)
+      if (validPassword) {
+        console.log('Success message:', 'Welcome ' + user.username);
+        done(null, user, req.flash('success', 'Welcome ' + user.username));
+      } else {
+        console.log('Error message:', 'Incorrect Password');
+        done(null, false, req.flash('message', 'Incorrect Password'));
+      }
+    } else {
+      console.log('Error message:', 'The Username does not exist.');
+      return done(null, false, req.flash('message', 'The Username does not exists.'));
+    }
+}));
 
   passport.serializeUser((user,done) => {
     done(null, user.id);
