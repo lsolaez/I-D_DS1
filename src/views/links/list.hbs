@@ -4,6 +4,7 @@
         <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">
+                    <h2>{{Codigo}}</h2>
                         <h3 class="card-title text-uppercase">
                             {{Nombre}}
                         </h3>
@@ -12,10 +13,10 @@
                     <p class="m-2">Precio: {{Precio}}</p>
                     <p class="m-2">Categoria: {{Categoria}}</p>
                     <p class="m-2">Disponible: {{Disponible}}</p>
-                    <a class="btn btn-danger" href="/links/delete/{{id}}">
+                    <a class="btn btn-danger" href="/links/delete/{{Codigo}}">
                         Delete Link
                     </a>
-                    <a class="btn btn-secondary" href="/links/edit/{{id}}">
+                    <a class="btn btn-secondary" href="/links/edit/{{Codigo}}">
                         Edit
                     </a>
                 </div>

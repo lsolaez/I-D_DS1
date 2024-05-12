@@ -29,4 +29,11 @@ router.get('/', async (req, res)=>{
     res.render('links/list', { productos });
 });
 
+router.get('/delete/:Codigo', async (req, res) => {
+    const { Codigo } = req.params;
+    await pool.query('DELETE FROM producto WHERE Codigo = ?', [Codigo]);
+    req.flash('success', 'Link Removed Successfully');
+    res.redirect('/links');
+});
+
 module.exports = router;

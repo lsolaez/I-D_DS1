@@ -27,7 +27,6 @@ app.set('view engine', '.hbs');
 
 // middlewares , o sea funciones que se ejecutan cada ves que un usuario envia una peticion.
 // ejemplo de eso es morgan que esta instalado en package.json eso te muestra las peticion en consolas y tales
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
