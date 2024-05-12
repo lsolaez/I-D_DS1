@@ -2,11 +2,12 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const {engine} = require('express-handlebars');
-const flash = require('connect-flash');
-const passport = require('passport');
 const session = require('express-session');
+const { body, validationResult } = require('express-validator');
+const passport = require('passport');
+const flash = require('connect-flash');
 const MySQLStore = require('express-mysql-session')(session);
-
+const bodyParser = require('body-parser');
 
 const  {database} = require('./keys');
 // inicializaciones 
@@ -43,7 +44,9 @@ app.use(passport.session());
 
 // variables globales 
 app.use((req, res, next) => {
-    next();
+  app.locals.message = req.flash('message');
+  app.locals.success = req.flash('success');
+  next();
 });
 
 //rutas 
