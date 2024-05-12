@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
+
 const passport= require('passport');
+const { isLoggedIn } = require('../lib/auth');
+
 
 
 
@@ -49,8 +52,13 @@ router.post('/signin', [
     })(req, res, next);
   });
 
-router.get('/profile', (req, res) => {
-    res.send('this is yuor profile');
+router.get('/profile', isLoggedIn ,(req, res) => {
+    res.render('profile');
+});
+
+router.get('/logout', (req, res) => {
+  req.logOut(() => {}); // Función de devolución de llamada vacía
+  res.redirect('signin');
 });
 
 module.exports = router;
