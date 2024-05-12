@@ -36,4 +36,26 @@ router.get('/delete/:Codigo', async (req, res) => {
     res.redirect('/links');
 });
 
+router.get('/edit/:Codigo', async (req, res) => {
+    const { Codigo } = req.params;
+    const productos = await pool.query('SELECT * FROM producto WHERE Codigo = ?', [Codigo]);
+    res.render('links/edit', {productos: productos[0]});
+});
+
+router.post('/edit/:Codigo', async (req, res) => {
+    const { Codigo } = req.params;
+    const { imagen, nombre, descripcion, precio, categoria, disponible}=req.body;
+    const newProduct = {
+        imagen,
+        nombre,
+        descripcion,
+        precio,
+        categoria,
+        disponible
+    };
+    await pool.query('UPDATE producto set ? WHERE Codigo = ?', [newProduct, Codigo]);
+    req.flash('success', 'Link Updated Successfully');
+    res.redirect('/links');
+
+});
 module.exports = router;
