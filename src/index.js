@@ -2,8 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const {engine} = require('express-handlebars');
+const flash = require('connect-flash');
 const passport = require('passport');
-
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 
@@ -26,6 +26,7 @@ app.set('view engine', '.hbs');
 
 // middlewares , o sea funciones que se ejecutan cada ves que un usuario envia una peticion.
 // ejemplo de eso es morgan que esta instalado en package.json eso te muestra las peticion en consolas y tales
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -36,7 +37,7 @@ app.use(session({
   saveUninitialized: false,
   store: new MySQLStore(database)
 }));
-
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
