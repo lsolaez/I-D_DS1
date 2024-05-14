@@ -48,7 +48,7 @@ CREATE TABLE pedido_domicilio (
 CREATE TABLE producto (
     id INT PRIMARY KEY,
     cantidad INT,
-    urlimagen VARCHAR(200),
+    urlimagen VARCHAR(255),
     confirmaciondedisponibilidad BOOLEAN,
     nombre VARCHAR(100),
     descripcion TEXT,
