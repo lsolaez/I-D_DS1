@@ -58,4 +58,10 @@ router.post('/edit/:Codigo', async (req, res) => {
     res.redirect('/links');
 
 });
+router.get('/cart', (req, res) => {
+    req.flash('success', 'Link Updated Successfully');
+    res.redirect('cartt/cart');
+});
+
+
 module.exports = router;

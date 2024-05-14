@@ -1,12 +1,14 @@
 CREATE DATABASE bakery;
 USE bakery;
 
-create table users(
-    id INT(11) NOT NULL,
+CREATE TABLE users(
+    id INT(11) NOT NULL AUTO_INCREMENT,
     username varchar(16) NOT NULL,
     password varchar(60) NOT NULL,
     fullname varchar(100) NOT NULL,
+    PRIMARY KEY (id)
 );
+ALTER TABLE users AUTO_INCREMENT = 1; 
 
 
 CREATE TABLE Producto (
