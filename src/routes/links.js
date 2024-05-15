@@ -60,7 +60,7 @@ router.post('/edit/:Codigo', async (req, res) => {
 });
 router.get('/cart', (req, res) => {
     req.flash('success', 'Link Updated Successfully');
-    res.redirect('cartt/cart');
+    res.render('links/cart');
 });
 
 
