@@ -4,8 +4,7 @@
         <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">
-                        <img src="{{imagen}}" alt="">
-                        
+                    <img src="{{imagen}}" alt="" style="width: 100px; height: 100px;">
                     <p class="m-2">{{Descripcion}}</p>
                     <p class="m-2">Precio: {{Precio}}</p>
                     <p class="m-2">Categoria: {{Categoria}}</p>
@@ -16,20 +15,52 @@
                     <a class="btn btn-secondary" href="/links/edit/{{Codigo}}">
                         Edit
                     </a>
-                    <a class="btn btn-success" href="">
-                        Comprar
-                    </a>
+                    <button class="btn btn-success add-to-cart-btn" data-codigo="{{Codigo}}">Comprar</button>
                 </div>
             </div>
         </div>
         {{else}}
         <div class="col-md-4 mx-auto">
             <div class="card card-body text-center">
-                <p>There are not Links saved yet.</p>
-                <a href="/links/add">Create One!</a>
+                <p>No hay productos guardados todavía.</p>
+                <a href="/links/add">Crear uno!</a>
             </div>
         </div>
         {{/each}}
     </div>
 </div>
-</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    $('.add-to-cart-btn').click(function(e) {
+        e.preventDefault(); // Evitar el envío del formulario de manera tradicional
+        var codigo = $(this).data('codigo');
+        $.post('/links/cart/add/' + codigo, function(data) {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }).fail(function() {
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred, please try again later.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+});
+</script>
