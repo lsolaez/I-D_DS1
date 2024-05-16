@@ -46,7 +46,7 @@ router.post('/signin', [
       return res.status(400).json({ errors: errors.array() });
     }
     passport.authenticate('local.signin', {
-      successRedirect: '/profile',
+      successRedirect: '/links',
       failureRedirect: '/signin',
       failureFlash: true
     })(req, res, next);
