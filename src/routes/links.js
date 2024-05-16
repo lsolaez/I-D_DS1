@@ -63,15 +63,15 @@ router.get('/cart', (req, res) => {
     res.render('links/cart', { cart: req.session.cart });
 });
 
-router.post('/cart/delete/:Codigo', (req, res) => {
-    console.log("Intentando eliminar el producto con código:", req.params.codigo);
+router.post('/cart/delete/:index', (req, res) => {
+    const { index } = req.params;
+    console.log("Intentando eliminar el producto en el índice:", index);
     console.log("Estado actual del carrito:", req.session.cart);
-    const { codigo } = req.params;
+
     if (req.session.cart) {
-        const initialLength = req.session.cart.length;
-        req.session.cart = req.session.cart.filter(producto => producto.codigo !== codigo);
-        console.log("Nuevo estado del carrito:", req.session.cart);
-        if (req.session.cart.length < initialLength) {
+        if (index >= 0 && index < req.session.cart.length) {
+            req.session.cart.splice(index, 1);
+            console.log("Nuevo estado del carrito:", req.session.cart);
             res.json({ success: true, message: 'El producto ha sido eliminado correctamente.' });
         } else {
             res.status(404).json({ success: false, message: 'Producto no encontrado.' });
@@ -80,6 +80,10 @@ router.post('/cart/delete/:Codigo', (req, res) => {
         res.status(404).json({ success: false, message: 'No hay productos en el carrito.' });
     }
 });
+
+
+
+
 
 
 

@@ -1,5 +1,3 @@
-
-<!-- cart.hbs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,7 +87,7 @@
               <p>Precio: {{this.precio}}</p>
             </div>
             <div class="product-actions">
-              <button class="delete-btn" data-codigo="{{this.codigo}}">&times;</button>
+              <button class="delete-btn" data-index="{{@index}}">&times;</button>
             </div>
           </div>
         {{else}}
@@ -108,7 +106,8 @@
   $(document).ready(function() {
       $('.delete-btn').click(function(e) {
           e.preventDefault();
-          var codigo = $(this).data('codigo');
+          var index = $(this).data('index');
+          console.log("Indice a eliminar:", index);
           Swal.fire({
               title: '¿Estás seguro?',
               text: "No podrás revertir esto!",
@@ -120,7 +119,7 @@
           }).then((result) => {
               if (result.isConfirmed) {
                   $.ajax({
-                      url: '/links/cart/delete/' + codigo,
+                      url: '/links/cart/delete/' + index,
                       type: 'POST',
                       success: function(response) {
                           Swal.fire(
