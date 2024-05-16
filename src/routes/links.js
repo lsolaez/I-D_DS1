@@ -65,13 +65,9 @@ router.get('/cart', (req, res) => {
 
 router.post('/cart/delete/:index', (req, res) => {
     const { index } = req.params;
-    console.log("Intentando eliminar el producto en el índice:", index);
-    console.log("Estado actual del carrito:", req.session.cart);
-
     if (req.session.cart) {
         if (index >= 0 && index < req.session.cart.length) {
             req.session.cart.splice(index, 1);
-            console.log("Nuevo estado del carrito:", req.session.cart);
             res.json({ success: true, message: 'El producto ha sido eliminado correctamente.' });
         } else {
             res.status(404).json({ success: false, message: 'Producto no encontrado.' });
