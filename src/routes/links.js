@@ -39,6 +39,15 @@ router.get('/', async (req, res) => {
     res.render('links/list', { productos });
 });
 
+
+//new para interfaz de usuario
+router.get('/listUsers', async (req, res) => {
+    const productos = await pool.query('SELECT * FROM Producto');
+    res.render('links/listUsers', { productos });
+});
+
+
+
 router.get('/delete/:Codigo', async (req, res) => {
     const { Codigo } = req.params;
     await pool.query('DELETE FROM producto WHERE Codigo = ?', [Codigo]);
