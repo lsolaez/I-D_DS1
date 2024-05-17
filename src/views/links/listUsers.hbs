@@ -9,7 +9,12 @@
                     <p class="m-2">Precio: {{Precio}}</p>
                     <p class="m-2">Categoria: {{Categoria}}</p>
                     <p class="m-2">Disponible: {{Disponible}}</p>
-
+                    <a class="btn btn-danger" href="/links/delete/{{Codigo}}">
+                        Delete Link
+                    </a>
+                    <a class="btn btn-secondary" href="/links/edit/{{Codigo}}">
+                        Edit
+                    </a>
                     <button class="btn btn-success add-to-cart-btn" data-codigo="{{Codigo}}">Comprar</button>
                 </div>
             </div>
