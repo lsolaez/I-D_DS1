@@ -1,0 +1,31 @@
+<div class="container p-4">
+    <div class="row">
+        {{#each productos}}
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <img src="{{imagen}}" alt="" style="width: 100px; height: 100px;">
+                    <p class="m-2">{{Descripcion}}</p>
+                    <p class="m-2">Precio: {{Precio}}</p>
+                    <p class="m-2">Categoria: {{Categoria}}</p>
+                    <p class="m-2">Disponible: {{Disponible}}</p>
+
+                    <button class="btn btn-success add-to-cart-btn" data-codigo="{{Codigo}}">Comprar</button>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center">
+                <p>No hay productos guardados todavía.</p>
+                <a href="/links/add" class="btn btn-primary">Crear uno!</a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+<!-- Botón para agregar un nuevo producto-->
+<div style="position: fixed; bottom: 20px; right: 20px;">
+    <a href="/links/add" class="btn btn-primary">Agregar producto nuevo</a>
+</div>
