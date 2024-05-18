@@ -11,10 +11,10 @@ CREATE TABLE cliente (
 -- Tabla 'usuario'
 CREATE TABLE usuario (
     id INT(11) NOT NULL AUTO_INCREMENT,
-    nombre_cliente VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    usuariocliente VARCHAR(50),
-    FOREIGN KEY (nombre_cliente) REFERENCES cliente(nombre)
+    username varchar(50) NOT NULL,
+    password varchar(60) NOT NULL,
+    fullname varchar(100) NOT NULL,
+    FOREIGN KEY (fullname) REFERENCES cliente(nombre)
     PRIMARY KEY (id)
 );
 ALTER TABLE usuario AUTO_INCREMENT = 1; 
