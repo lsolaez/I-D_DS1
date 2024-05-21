@@ -7,10 +7,10 @@ router.get('/add', (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-    const { codigo, imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
+    const { id, imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
 
     // Validación de código único
-    const existingProduct = await pool.query('SELECT * FROM Producto WHERE codigo = ?', [codigo]);
+    const existingProduct = await pool.query('SELECT * FROM Producto WHERE id = ?', [id]);
     if (existingProduct.length > 0) {
         const script = `Swal.fire('Error', 'Ya existe un producto con el mismo código.', 'error');`;
         return res.render('links/add', { script });
@@ -28,7 +28,7 @@ router.post('/add', async (req, res) => {
         return res.render('links/add', { script });
     }
 
-    const newProduct = { codigo, imagen, nombre, descripcion, precio, categoria, disponible };
+    const newProduct = { id, imagen, nombre, descripcion, precio, categoria, disponible };
     await pool.query('INSERT INTO Producto SET ?', [newProduct]);
     const script = `Swal.fire('Éxito', 'Producto guardado exitosamente.', 'success');`;
     res.render('links/add', { script });
@@ -48,32 +48,32 @@ router.get('/listUsers', async (req, res) => {
 
 
 
-router.get('/delete/:Codigo', async (req, res) => {
-    const { Codigo } = req.params;
-    await pool.query('DELETE FROM producto WHERE Codigo = ?', [Codigo]);
+router.get('/delete/:id', async (req, res) => {
+    const { id } = req.params;
+    await pool.query('DELETE FROM producto WHERE id = ?', [id]);
     req.flash('success', 'Product Removed Successfully');
     res.redirect('/links');
 });
 
-router.get('/edit/:Codigo', async (req, res) => {
-    const { Codigo } = req.params;
-    const productos = await pool.query('SELECT * FROM producto WHERE Codigo = ?', [Codigo]);
+router.get('/edit/:id', async (req, res) => {
+    const { id } = req.params;
+    const productos = await pool.query('SELECT * FROM producto WHERE id = ?', [id]);
     res.render('links/edit', { productos: productos[0] });
 });
 
-router.post('/edit/:Codigo', async (req, res) => {
-    const { Codigo } = req.params;
+router.post('/edit/:id', async (req, res) => {
+    const { id } = req.params;
     const { imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
     const updatedProduct = { imagen, nombre, descripcion, precio, categoria, disponible };
-    await pool.query('UPDATE producto SET ? WHERE Codigo = ?', [updatedProduct, Codigo]);
+    await pool.query('UPDATE producto SET ? WHERE id = ?', [updatedProduct, id]);
     req.flash('success', 'Product Updated Successfully');
     res.redirect('/links');
 });
 
 // Agregar producto al carrito
-router.post('/cart/add/:Codigo', async (req, res) => {
-    const { Codigo } = req.params;
-    const producto = await pool.query('SELECT * FROM producto WHERE Codigo = ?', [Codigo]);
+router.post('/cart/add/:id', async (req, res) => {
+    const { id } = req.params;
+    const producto = await pool.query('SELECT * FROM producto WHERE id = ?', [id]);
 
     if (producto.length > 0) {
         const item = producto[0];

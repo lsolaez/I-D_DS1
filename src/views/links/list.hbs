@@ -1,21 +1,21 @@
-<div class="container p-4">
+<div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
     <div class="row">
         {{#each productos}}
         <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <img src="{{imagen}}" alt="" style="width: 100px; height: 100px;">
-                    <p class="m-2">{{Descripcion}}</p>
-                    <p class="m-2">Precio: {{Precio}}</p>
-                    <p class="m-2">Categoria: {{Categoria}}</p>
-                    <p class="m-2">Disponible: {{Disponible}}</p>
-                    <a class="btn btn-danger" href="/links/delete/{{Codigo}}">
+                    <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
+                    <p class="m-2">{{descripcion}}</p>
+                    <p class="m-2">Precio: {{precio}}</p>
+                    <p class="m-2">Categoria: {{categoria}}</p>
+                    <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
+                    <a class="btn btn-danger" href="/links/delete/{{id}}">
                         Delete Link
                     </a>
-                    <a class="btn btn-secondary" href="/links/edit/{{Codigo}}">
+                    <a class="btn btn-secondary" href="/links/edit/{{id}}">
                         Edit
                     </a>
-                    <button class="btn btn-success add-to-cart-btn" data-codigo="{{Codigo}}">Comprar</button>
+                    <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
                 </div>
             </div>
         </div>

@@ -26,7 +26,7 @@ router.post('/signup', [
       return res.status(400).json({ errors: errors.array() });
     }
     passport.authenticate('local.signup', {
-      successRedirect: '/profile',
+      successRedirect: '/links',
       failureRedirect: '/signup',
       failureFlash: true
     })(req, res, next);

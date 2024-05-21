@@ -52,4 +52,9 @@ font-family: 'Oswald', sans-serif;
     }
   }
 
+  .container {
+    max-height: 80vh; /* Ajusta el valor según tus necesidades */
+    overflow-y: auto;
+}
+
   

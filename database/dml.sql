@@ -20,29 +20,27 @@ INSERT INTO cliente (id, nombre, apellido) VALUES (20, 'Lorena', 'Diaz');
 INSERT INTO cliente (id, nombre, apellido) VALUES (21, 'Oscar', 'Hernandez');
 INSERT INTO cliente (id, nombre, apellido) VALUES (22, 'Rosa', 'Sanchez');
 
-
 -- Insertando datos en la tabla 'usuario'
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (3, 'Carlos', 'passwordCarlos', 'usuarioCarlos');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (4, 'Ana', 'passwordAna', 'usuarioAna');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (5, 'Luis', 'passwordLuis', 'usuarioLuis');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (6, 'Sofia', 'passwordSofia', 'usuarioSofia');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (7, 'Diego', 'passwordDiego', 'usuarioDiego');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (8, 'Isabel', 'passwordIsabel', 'usuarioIsabel');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (9, 'Ricardo', 'passwordRicardo', 'usuarioRicardo');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (10, 'Carmen', 'passwordCarmen', 'usuarioCarmen');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (11, 'Fernando', 'passwordFernando', 'usuarioFernando');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (12, 'Patricia', 'passwordPatricia', 'usuarioPatricia');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (13, 'Sergio', 'passwordSergio', 'usuarioSergio');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (14, 'Laura', 'passwordLaura', 'usuarioLaura');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (15, 'Javier', 'passwordJavier', 'usuarioJavier');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (16, 'Teresa', 'passwordTeresa', 'usuarioTeresa');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (17, 'Rafael', 'passwordRafael', 'usuarioRafael');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (18, 'Sara', 'passwordSara', 'usuarioSara');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (19, 'Hector', 'passwordHector', 'usuarioHector');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (20, 'Lorena', 'passwordLorena', 'usuarioLorena');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (21, 'Oscar', 'passwordOscar', 'usuarioOscar');
-INSERT INTO usuario (id, nombre_cliente, password, usuariocliente) VALUES (22, 'Rosa', 'passwordRosa', 'usuarioRosa');
-
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioCarlos', 'passwordCarlos', 'Carlos');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioAna', 'passwordAna', 'Ana');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioLuis', 'passwordLuis', 'Luis');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioSofia', 'passwordSofia', 'Sofia');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioDiego', 'passwordDiego', 'Diego');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioIsabel', 'passwordIsabel', 'Isabel');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioRicardo', 'passwordRicardo', 'Ricardo');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioCarmen', 'passwordCarmen', 'Carmen');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioFernando', 'passwordFernando', 'Fernando');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioPatricia', 'passwordPatricia', 'Patricia');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioSergio', 'passwordSergio', 'Sergio');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioLaura', 'passwordLaura', 'Laura');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioJavier', 'passwordJavier', 'Javier');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioTeresa', 'passwordTeresa', 'Teresa');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioRafael', 'passwordRafael', 'Rafael');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioSara', 'passwordSara', 'Sara');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioHector', 'passwordHector', 'Hector');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioLorena', 'passwordLorena', 'Lorena');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioOscar', 'passwordOscar', 'Oscar');
+INSERT INTO usuario (username, password, fullname) VALUES ('usuarioRosa', 'passwordRosa', 'Rosa');
 
 -- Insertando datos en la tabla 'direcciones'
 INSERT INTO direcciones (id, direccionCliente, id_cliente) VALUES (3, 'Calle 789', 3);
@@ -67,48 +65,24 @@ INSERT INTO direcciones (id, direccionCliente, id_cliente) VALUES (21, 'Calle 44
 INSERT INTO direcciones (id, direccionCliente, id_cliente) VALUES (22, 'Avenida 4647', 22);
 
 -- Insertando datos en la tabla 'producto'
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (3, 15, 'urlimagen3', true, 'Galletas', 'Galletas de avena y miel', 3000, 'Panaderia');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (4, 20, 'urlimagen4', true, 'Donas', 'Donas glaseadas', 2500, 'Pasteleria');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (5, 10, 'urlimagen5', true, 'Empanadas', 'Empanadas de pollo', 2000, 'Comida rápida');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (6, 5, 'urlimagen6', true, 'Pizza', 'Pizza de pepperoni', 15000, 'Comida rápida');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (7, 8, 'urlimagen7', true, 'Hamburguesa', 'Hamburguesa con queso', 12000, 'Comida rápida');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (8, 10, 'urlimagen8', true, 'Sandwich', 'Sandwich de jamón y queso', 8000, 'Comida rápida');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (9, 20, 'urlimagen9', true, 'Ensalada', 'Ensalada de frutas', 7000, 'Saludable');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (10, 15, 'urlimagen10', true, 'Jugo', 'Jugo de naranja natural', 5000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (11, 10, 'urlimagen11', true, 'Café', 'Café americano', 3000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (12, 5, 'urlimagen12', true, 'Té', 'Té de manzanilla', 2500, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (13, 15, 'urlimagen13', true, 'Agua', 'Agua mineral', 2000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (14, 20, 'urlimagen14', true, 'Refresco', 'Refresco de cola', 2500, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (15, 10, 'urlimagen15', true, 'Cerveza', 'Cerveza rubia', 4000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (16, 5, 'urlimagen16', true, 'Vino', 'Vino tinto', 15000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (17, 8, 'urlimagen17', true, 'Whisky', 'Whisky escocés', 30000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (18, 10, 'urlimagen18', true, 'Ron', 'Ron añejo', 20000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (19, 20, 'urlimagen19', true, 'Vodka', 'Vodka ruso', 25000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (20, 15, 'urlimagen20', true, 'Tequila', 'Tequila mexicano', 20000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (21, 10, 'urlimagen21', true, 'Ginebra', 'Ginebra inglesa', 15000, 'Bebidas');
-INSERT INTO producto (id, cantidad, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (22, 5, 'urlimagen22', true, 'Champagne', 'Champagne francés', 30000, 'Bebidas');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (1, 'https://www.gourmet.com.co/wp-content/uploads/2020/02/GalletasAvena-Gourmet-1.jpg', 'Disponible', 'Galletas', 'Galletas de avena y miel', 3000, 'Panaderia');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (2, 'https://previews.123rf.com/images/ocusfocus/ocusfocus1505/ocusfocus150500032/40402110-cuadro-delicioso-y-tentador-llena-de-donas-con-diferentes-sabores-y-coberturas-en-la-alimentaci%C3%B3n.jpg', 'Disponible', 'Donas', 'Donas glaseadas', 2500, 'Pasteleria');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (3, 'https://www.southernliving.com/thmb/UW4kKKL-_M3WgP7pkL6Pb6lwcgM=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Ham_Sandwich_011-1-49227336bc074513aaf8fdbde440eafe.jpg', 'Disponible', 'Sandwich', 'Sandwich de jamón y queso', 8000, 'Comida rápida');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (4, 'https://www.recetasnestle.com.co/sites/default/files/srh_recipes/07b7133ace77e9539864e423774ef443.jpeg', 'Disponible', 'Ensalada', 'Ensalada de frutas', 7000, 'Saludable');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (5, 'https://boutic.cl/cdn/shop/products/NaranjaNatural_portada_1512x.png?v=1667598605', 'Disponible', 'Jugo', 'Jugo de naranja natural', 5000, 'Bebidas');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (6, 'https://i.pinimg.com/474x/04/e3/6f/04e36f80e52bd9bfba42bb83d77fb461.jpg', 'Disponible', 'Café', 'Café americano', 3000, 'Bebidas');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (8, 'https://img.interempresas.net/fotos/2520538.jpeg', 'Disponible', 'Agua', 'Agua mineral', 2000, 'Bebidas');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (9, 'https://res.cloudinary.com/riqra/image/upload/w_656,h_656,c_limit,q_auto,f_auto/v1678811256/sellers/2/igykzmu1fvpxol9fdon0.jpg', 'Disponible', 'Refresco', 'Refresco de cola', 2500, 'Bebidas');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (11, 'https://img.delicious.com.au/RzgR3kXD/w1200/del/2015/12/cornetti-italian-croissants-24713-1.jpg', 'Disponible', 'Croissant', 'Croissant de mantequilla', 3500, 'Panaderia');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (12, 'https://www.lactaidenespanol.com/sites/lactaid_us/files/recipe-images/giantblueberrymuffins.png', 'Disponible', 'Muffin', 'Muffin de arándanos', 4000, 'Pasteleria');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (13, 'https://imag.bonviveur.com/bagels-en-el-plato.jpg', 'Disponible', 'Bagel', 'Bagel con queso crema', 3000, 'Panaderia');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (14, 'https://www.aki.com.ec/wp-content/uploads/2021/01/foto-receta-pastel-chocolate.jpg', 'Disponible', 'Torta', 'Torta de chocolate', 15000, 'Pasteleria');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (15, 'https://www.midiariodecocina.com/wp-content/uploads/2016/06/Pan-integral-01.jpg', 'Disponible', 'Pan Integral', 'Pan integral con semillas', 5000, 'Panaderia');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (17, 'https://www.thecountrycook.net/wp-content/uploads/2022/04/thumbnail-Homemade-Churros.jpg', 'Disponible', 'Churros', 'Churros con azúcar y canela', 2000, 'Panaderia');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (18, 'https://editorialtelevisa.brightspotcdn.com/wp-content/uploads/2020/11/quiche-que-es-con-queso-y-espinacas.jpg', 'Disponible', 'Quiche', 'Quiche de espinacas y queso', 12000, 'Panaderia');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (19, 'https://content-cocina.lecturas.com/medio/2022/12/08/eclairs-de-crema-y-chocolate_46bd7e43_1200x1200.jpg', 'Disponible', 'Eclair', 'Eclair de chocolate', 3000, 'Pasteleria');
+INSERT INTO producto (id, urlimagen, confirmaciondedisponibilidad, nombre, descripcion, precio, categoria) VALUES (20, 'https://www.richs.co.za/wp-content/uploads/2021/03/Medium-09751_ZA_Product-Beauty.jpg', 'Disponible', 'Baguette', 'Baguette francesa', 3500, 'Panaderia');
 
-
--- Insertando datos en la tabla 'domiciliario'
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (2, 'Bicicleta', '09:00:00', 2);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (3, 'Moto', '10:00:00', 3);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (4, 'Carro', '11:00:00', 4);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (5, 'Bicicleta', '12:00:00', 5);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (6, 'Moto', '13:00:00', 6);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (7, 'Carro', '14:00:00', 7);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (8, 'Bicicleta', '15:00:00', 8);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (9, 'Moto', '16:00:00', 9);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (10, 'Carro', '17:00:00', 10);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (11, 'Bicicleta', '18:00:00', 11);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (12, 'Moto', '19:00:00', 12);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (13, 'Carro', '20:00:00', 13);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (14, 'Bicicleta', '21:00:00', 14);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (15, 'Moto', '22:00:00', 15);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (16, 'Carro', '23:00:00', 16);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (17, 'Bicicleta', '00:00:00', 17);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (18, 'Moto', '01:00:00', 18);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (19, 'Carro', '02:00:00', 19);
-INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (20, 'Bicicleta', '03:00:00', 20);
 
 -- Insertando datos en la tabla 'licencia_conduccion'
 INSERT INTO licencia_conduccion (id, fecha_inicio_licencia, finalizacion_licencia) VALUES (2, '2024-02-01', '2027-01-31');
@@ -132,75 +106,92 @@ INSERT INTO licencia_conduccion (id, fecha_inicio_licencia, finalizacion_licenci
 INSERT INTO licencia_conduccion (id, fecha_inicio_licencia, finalizacion_licencia) VALUES (20, '2025-08-01', '2028-07-31');
 INSERT INTO licencia_conduccion (id, fecha_inicio_licencia, finalizacion_licencia) VALUES (21, '2025-09-01', '2028-08-31');
 
+-- Insertando datos en la tabla 'domiciliario'
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (2, 'Bicicleta', '09:00:00', 2);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (3, 'Moto', '10:00:00', 3);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (4, 'Carro', '11:00:00', 4);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (5, 'Bicicleta', '12:00:00', 5);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (6, 'Moto', '13:00:00', 6);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (7, 'Carro', '14:00:00', 7);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (8, 'Bicicleta', '15:00:00', 8);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (9, 'Moto', '16:00:00', 9);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (10, 'Carro', '17:00:00', 10);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (11, 'Bicicleta', '18:00:00', 11);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (12, 'Moto', '19:00:00', 12);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (13, 'Carro', '20:00:00', 13);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (14, 'Bicicleta', '21:00:00', 14);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (15, 'Moto', '22:00:00', 15);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (16, 'Carro', '23:00:00', 16);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (17, 'Bicicleta', '00:00:00', 17);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (18, 'Moto', '01:00:00', 18);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (19, 'Carro', '02:00:00', 19);
+INSERT INTO domiciliario (id, medio_transporte, horario_disponible, id_licencia_conduccion) VALUES (20, 'Bicicleta', '03:00:00', 20);
 
 -- Insertando datos en la tabla 'pedido_domicilio'
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (2, '11:00:00', '2024-05-18', '2024-05-18', '12:00:00', 2, 2, 2, 2);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (3, '12:00:00', '2024-05-19', '2024-05-19', '13:00:00', 3, 3, 3, 3);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (4, '13:00:00', '2024-05-20', '2024-05-20', '14:00:00', 4, 4, 4, 4);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (5, '14:00:00', '2024-05-21', '2024-05-21', '15:00:00', 5, 5, 5, 5);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (6, '15:00:00', '2024-05-22', '2024-05-22', '16:00:00', 6, 6, 6, 6);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (7, '16:00:00', '2024-05-23', '2024-05-23', '17:00:00', 7, 7, 7, 7);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (8, '17:00:00', '2024-05-24', '2024-05-24', '18:00:00', 8, 8, 8, 8);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (9, '18:00:00', '2024-05-25', '2024-05-25', '19:00:00', 9, 9, 9, 9);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (10, '19:00:00', '2024-05-26', '2024-05-26', '20:00:00', 10, 10, 10, 10);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (11, '20:00:00', '2024-05-27', '2024-05-27', '21:00:00', 11, 11, 11, 11);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (12, '21:00:00', '2024-05-28', '2024-05-28', '22:00:00', 12, 12, 12, 12);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (13, '22:00:00', '2024-05-29', '2024-05-29', '23:00:00', 13, 13, 13, 13);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (14, '23:00:00', '2024-05-30', '2024-05-30', '00:00:00', 14, 14, 14, 14);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (15, '00:00:00', '2024-05-31', '2024-05-31', '01:00:00', 15, 15, 15, 15);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (16, '01:00:00', '2024-06-01', '2024-06-01', '02:00:00', 16, 16, 16, 16);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (17, '02:00:00', '2024-06-02', '2024-06-02', '03:00:00', 17, 17, 17, 17);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (18, '03:00:00', '2024-06-03', '2024-06-03', '04:00:00', 18, 18, 18, 18);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (19, '04:00:00', '2024-06-04', '2024-06-04', '05:00:00', 19, 19, 19, 19);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (20, '05:00:00', '2024-06-05', '2024-06-05', '06:00:00', 20, 20, 20, 20);
-INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (21, '06:00:00', '2024-06-06', '2024-06-06', '07:00:00', 21, 21, 21, 21);
-
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (2, '11:00:00', '2024-05-18', '2024-05-18', '12:00:00', 3, 3, 2, 3);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (3, '12:00:00', '2024-05-19', '2024-05-19', '13:00:00', 4, 4, 3, 4);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (4, '13:00:00', '2024-05-20', '2024-05-20', '14:00:00', 5, 5, 4, 5);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (5, '14:00:00', '2024-05-21', '2024-05-21', '15:00:00', 6, 6, 5, 6);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (6, '15:00:00', '2024-05-22', '2024-05-22', '16:00:00', 7, 7, 6, 7);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (7, '16:00:00', '2024-05-23', '2024-05-23', '17:00:00', 8, 8, 7, 8);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (8, '17:00:00', '2024-05-24', '2024-05-24', '18:00:00', 9, 9, 8, 9);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (9, '18:00:00', '2024-05-25', '2024-05-25', '19:00:00', 10, 10, 9, 10);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (10, '19:00:00', '2024-05-26', '2024-05-26', '20:00:00', 11, 11, 10, 11);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (11, '20:00:00', '2024-05-27', '2024-05-27', '21:00:00', 12, 12, 11, 12);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (12, '21:00:00', '2024-05-28', '2024-05-28', '22:00:00', 13, 13, 12, 13);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (13, '22:00:00', '2024-05-29', '2024-05-29', '23:00:00', 14, 14, 13, 14);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (14, '23:00:00', '2024-05-30', '2024-05-30', '00:00:00', 15, 15, 14, 15);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (15, '00:00:00', '2024-05-31', '2024-05-31', '01:00:00', 16, 16, 15, 16);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (16, '01:00:00', '2024-06-01', '2024-06-01', '02:00:00', 17, 17, 16, 17);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (17, '02:00:00', '2024-06-02', '2024-06-02', '03:00:00', 18, 18, 17, 18);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (18, '03:00:00', '2024-06-03', '2024-06-03', '04:00:00', 19, 19, 18, 19);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (19, '04:00:00', '2024-06-04', '2024-06-04', '05:00:00', 20, 20, 19, 20);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (20, '05:00:00', '2024-06-05', '2024-06-05', '06:00:00', 21, 21, 20, 21);
+INSERT INTO pedido_domicilio (id, horario_envio, fecha_envio, fecha_fin_servicio, hora_fin_servicio, clave_cliente, id_producto, id_domiciliario, id_direccion_cliente) VALUES (21, '06:00:00', '2024-06-06', '2024-06-06', '07:00:00', 22, 22, 21, 22);
 
 -- Insertando datos en la tabla 'decide_recoger_producto'
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (2, 'Calle 789', 2, '2024-05-18', '10:00:00', 2);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (3, 'Calle 1011', 3, '2024-05-19', '11:00:00', 3);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (4, 'Calle 1213', 4, '2024-05-20', '12:00:00', 4);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (5, 'Calle 1415', 5, '2024-05-21', '13:00:00', 5);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (6, 'Calle 1617', 6, '2024-05-22', '14:00:00', 6);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (7, 'Calle 1819', 7, '2024-05-23', '15:00:00', 7);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (8, 'Calle 2021', 8, '2024-05-24', '16:00:00', 8);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (9, 'Calle 2223', 9, '2024-05-25', '17:00:00', 9);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (10, 'Calle 2425', 10, '2024-05-26', '18:00:00', 10);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (11, 'Calle 2627', 11, '2024-05-27', '19:00:00', 11);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (12, 'Calle 2829', 12, '2024-05-28', '20:00:00', 12);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (13, 'Calle 3031', 13, '2024-05-29', '21:00:00', 13);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (14, 'Calle 3233', 14, '2024-05-30', '22:00:00', 14);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (15, 'Calle 3435', 15, '2024-05-31', '23:00:00', 15);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (16, 'Calle 3637', 16, '2024-06-01', '00:00:00', 16);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (17, 'Calle 3839', 17, '2024-06-02', '01:00:00', 17);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (18, 'Calle 4041', 18, '2024-06-03', '02:00:00', 18);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (19, 'Calle 4243', 19, '2024-06-04', '03:00:00', 19);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (20, 'Calle 4445', 20, '2024-06-05', '04:00:00', 20);
-INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (21, 'Calle 4647', 21, '2024-06-06', '05:00:00', 21);
-
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (2, 'Calle 789', 3, '2024-05-18', '10:00:00', 3);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (3, 'Calle 1011', 4, '2024-05-19', '11:00:00', 4);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (4, 'Calle 1213', 5, '2024-05-20', '12:00:00', 5);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (5, 'Calle 1415', 6, '2024-05-21', '13:00:00', 6);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (6, 'Calle 1617', 7, '2024-05-22', '14:00:00', 7);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (7, 'Calle 1819', 8, '2024-05-23', '15:00:00', 8);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (8, 'Calle 2021', 9, '2024-05-24', '16:00:00', 9);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (9, 'Calle 2223', 10, '2024-05-25', '17:00:00', 10);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (10, 'Calle 2425', 11, '2024-05-26', '18:00:00', 11);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (11, 'Calle 2627', 12, '2024-05-27', '19:00:00', 12);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (12, 'Calle 2829', 13, '2024-05-28', '20:00:00', 13);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (13, 'Calle 3031', 14, '2024-05-29', '21:00:00', 14);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (14, 'Calle 3233', 15, '2024-05-30', '22:00:00', 15);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (15, 'Calle 3435', 16, '2024-05-31', '23:00:00', 16);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (16, 'Calle 3637', 17, '2024-06-01', '00:00:00', 17);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (17, 'Calle 3839', 18, '2024-06-02', '01:00:00', 18);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (18, 'Calle 4041', 19, '2024-06-03', '02:00:00', 19);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (19, 'Calle 4243', 20, '2024-06-04', '03:00:00', 20);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (20, 'Calle 4445', 21, '2024-06-05', '04:00:00', 21);
+INSERT INTO decide_recoger_producto (id, direccion_tienda_unica, id_cliente, fecha_asignada_recoger, hora_asignada_recoger, id_producto) VALUES (21, 'Calle 4647', 22, '2024-06-06', '05:00:00', 22);
 
 -- Insertando datos en la tabla 'administrador'
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (2, 2, 2, true, 1, true, 2, 2);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (3, 3, 3, true, 2, true, 3, 3);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (4, 4, 4, true, 3, true, 4, 4);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (5, 5, 5, true, 4, true, 5, 5);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (6, 6, 6, true, 5, true, 6, 6);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (7, 7, 7, true, 6, true, 7, 7);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (8, 8, 8, true, 7, true, 8, 8);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (9, 9, 9, true, 8, true, 9, 9);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (10, 10, 10, true, 9, true, 10, 10);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (11, 11, 11, true, 10, true, 11, 11);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (12, 12, 12, true, 11, true, 12, 12);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (13, 13, 13, true, 12, true, 13, 13);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (14, 14, 14, true, 13, true, 14, 14);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (15, 15, 15, true, 14, true, 15, 15);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (16, 16, 16, true, 15, true, 16, 16);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (17, 17, 17, true, 16, true, 17, 17);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (18, 18, 18, true, 17, true, 18, 18);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (19, 19, 19, true, 18, true, 19, 19);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (20, 20, 20, true, 19, true, 20, 20);
-INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (21, 21, 21, true, 20, true, 21, 21);
-
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (2, 3, 2, true, 3, true, 2, 2);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (3, 4, 3, true, 4, true, 3, 3);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (4, 5, 4, true, 5, true, 4, 4);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (5, 6, 5, true, 6, true, 5, 5);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (6, 7, 6, true, 7, true, 6, 6);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (7, 8, 7, true, 8, true, 7, 7);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (8, 9, 8, true, 9, true, 8, 8);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (9, 10, 9, true, 10, true, 9, 9);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (10, 11, 10, true, 11, true, 10, 10);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (11, 12, 11, true, 12, true, 11, 11);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (12, 13, 12, true, 13, true, 12, 12);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (13, 14, 13, true, 14, true, 13, 13);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (14, 15, 14, true, 15, true, 14, 14);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (15, 16, 15, true, 16, true, 15, 15);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (16, 17, 16, true, 17, true, 16, 16);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (17, 18, 17, true, 18, true, 17, 17);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (18, 19, 18, true, 19, true, 18, 18);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (19, 20, 19, true, 20, true, 19, 19);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (20, 21, 20, true, 21, true, 20, 20);
+INSERT INTO administrador (id, id_producto_domicilio, id_caja, confirmacion_pedido, id_producto_recogido_cliente, finalizacion_pedido, id_cocina, id_domiciliario) VALUES (21, 22, 21, true, 22, true, 21, 21);
 
 -- Insertando datos en la tabla 'caja'
 INSERT INTO caja (id, detalle_tarifa, pago_pedido) VALUES (2, 'Tarifa reducida', 4000);
@@ -246,23 +237,23 @@ INSERT INTO cocina (id, fecha_finalizada_preparacion, hora_finalizada_preparacio
 INSERT INTO cocina (id, fecha_finalizada_preparacion, hora_finalizada_preparacion, nombre_producto, descripcion_producto, estado_producto) VALUES (20, '2024-06-05', '03:00:00', 'Champagne', 'Champagne francés', 'Listo para entregar');
 
 -- Insertando datos en la tabla 'accesibilidad'
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (2, 2, 2, 2);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (3, 3, 3, 3);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (4, 4, 4, 4);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (5, 5, 5, 5);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (6, 6, 6, 6);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (7, 7, 7, 7);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (8, 8, 8, 8);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (9, 9, 9, 9);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (10, 10, 10, 10);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (11, 11, 11, 11);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (12, 12, 12, 12);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (13, 13, 13, 13);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (14, 14, 14, 14);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (15, 15, 15, 15);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (16, 16, 16, 16);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (17, 17, 17, 17);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (18, 18, 18, 18);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (19, 19, 19, 19);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (20, 20, 20, 20);
-INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (21, 21, 21, 21);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (2, 3, 2, 2);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (3, 4, 3, 3);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (4, 5, 4, 4);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (5, 6, 5, 5);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (6, 7, 6, 6);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (7, 8, 7, 7);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (8, 9, 8, 8);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (9, 10, 9, 9);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (10, 11, 10, 10);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (11, 12, 11, 11);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (12, 13, 12, 12);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (13, 14, 13, 13);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (14, 15, 14, 14);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (15, 16, 15, 15);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (16, 17, 16, 16);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (17, 18, 17, 17);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (18, 19, 18, 18);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (19, 20, 19, 19);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (20, 21, 20, 20);
+INSERT INTO accesibilidad (id, id_cliente, id_caja, id_cocina) VALUES (21, 22, 21, 21);

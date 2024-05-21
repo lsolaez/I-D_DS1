@@ -2,25 +2,25 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="/links/edit/{{productos.Codigo}}" method="POST">
+            <form action="/links/edit/{{productos.id}}" method="POST">
                 <div class="form-group">
                         <div class="form-group">
-                            <input type="text" value="{{productos.imagen}}" name="imagen" class="form-control" placeholder="URL imagen">
+                            <input type="text" value="{{productos.urlimagen}}" name="imagen" class="form-control" placeholder="URL imagen">
                         </div>
                         <div class="form-group">
-                            <input type="text" value="{{productos.Nombre}}" name="nombre" class="form-control" placeholder="nombre del producto">
+                            <input type="text" value="{{productos.nombre}}" name="nombre" class="form-control" placeholder="nombre del producto">
                         </div>
                         <div class="form-group">
-                            <input type="text" value="{{productos.Descripcion}}" name="descripcion" class="form-control" placeholder="Descripcion">
+                            <input type="text" value="{{productos.descripcion}}" name="descripcion" class="form-control" placeholder="Descripcion">
                         </div>
                         <div class="form-group">
-                            <input type="number" value="{{productos.Precio}}" name="precio" class="form-control" placeholder="Precio">
+                            <input type="number" value="{{productos.precio}}" name="precio" class="form-control" placeholder="Precio">
                         </div>
                         <div class="form-group">
-                            <input type="text" value="{{productos.Categoria}}" name="categoria" class="form-control" placeholder="Categoria">
+                            <input type="text" value="{{productos.categoria}}" name="categoria" class="form-control" placeholder="Categoria">
                         </div>
                         <div class="form-group">
-                            <input type="text" value="{{productos.Disponible}}" name="disponible" class="form-control" placeholder="Disponible">
+                            <input type="text" value="{{productos.confirmaciondedisponibilidad}}" name="disponible" class="form-control" placeholder="Disponible">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success btn-block">Save</button>

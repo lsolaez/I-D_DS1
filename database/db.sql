@@ -9,15 +9,14 @@ CREATE TABLE cliente (
 );
 
 -- Tabla 'usuario'
-CREATE TABLE usuario (
+CREATE TABLE users (
     id INT(11) NOT NULL AUTO_INCREMENT,
     username varchar(50) NOT NULL,
     password varchar(60) NOT NULL,
-    fullname varchar(100) NOT NULL,
-    FOREIGN KEY (fullname) REFERENCES cliente(nombre)
+    id_cliente INT,
     PRIMARY KEY (id)
 );
-ALTER TABLE usuario AUTO_INCREMENT = 1; 
+ALTER TABLE users AUTO_INCREMENT = 1; 
 
 -- Tabla 'direcciones'
 CREATE TABLE direcciones (
@@ -25,6 +24,49 @@ CREATE TABLE direcciones (
     direccionCliente VARCHAR(100),
     id_cliente INT,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id)
+);
+
+-- Tabla 'producto'
+CREATE TABLE producto (
+    id INT PRIMARY KEY,
+    cantidad INT,
+    urlimagen VARCHAR(255),
+    confirmaciondedisponibilidad VARCHAR(10),
+    nombre VARCHAR(100),
+    descripcion TEXT,
+    precio DECIMAL(10,2),
+    categoria VARCHAR(50)
+);
+
+-- Tabla 'caja'
+CREATE TABLE caja (
+    id INT PRIMARY KEY,
+    detalle_tarifa VARCHAR(100),
+    pago_pedido DECIMAL(10,2)
+);
+-- Tabla 'cocina'
+CREATE TABLE cocina (
+    id INT PRIMARY KEY,
+    fecha_finalizada_preparacion DATE,
+    hora_finalizada_preparacion TIME,
+    nombre_producto VARCHAR(100),
+    descripcion_producto TEXT,
+    estado_producto VARCHAR(50)
+);
+-- Tabla 'licencia_conduccion'
+CREATE TABLE licencia_conduccion (
+    id INT PRIMARY KEY,
+    fecha_inicio_licencia DATE,
+    finalizacion_licencia DATE
+);
+
+-- Tabla 'domiciliario'
+CREATE TABLE domiciliario (
+    id INT PRIMARY KEY,
+    medio_transporte VARCHAR(50),
+    horario_disponible TIME,
+    id_licencia_conduccion INT,
+    FOREIGN KEY (id_licencia_conduccion) REFERENCES licencia_conduccion(id)
 );
 
 -- Tabla 'pedido_domicilio'
@@ -44,33 +86,6 @@ CREATE TABLE pedido_domicilio (
     FOREIGN KEY (id_direccion_cliente) REFERENCES direcciones(id)
 );
 
--- Tabla 'producto'
-CREATE TABLE producto (
-    id INT PRIMARY KEY,
-    cantidad INT,
-    urlimagen VARCHAR(255),
-    confirmaciondedisponibilidad BOOLEAN,
-    nombre VARCHAR(100),
-    descripcion TEXT,
-    precio DECIMAL(10,2),
-    categoria VARCHAR(50)
-);
-
--- Tabla 'domiciliario'
-CREATE TABLE domiciliario (
-    id INT PRIMARY KEY,
-    medio_transporte VARCHAR(50),
-    horario_disponible TIME,
-    id_licencia_conduccion INT,
-    FOREIGN KEY (id_licencia_conduccion) REFERENCES licencia_conduccion(id)
-);
-
--- Tabla 'licencia_conduccion'
-CREATE TABLE licencia_conduccion (
-    id INT PRIMARY KEY,
-    fecha_inicio_licencia DATE,
-    finalizacion_licencia DATE
-);
 
 -- Tabla 'decide_recoger_producto'
 CREATE TABLE decide_recoger_producto (
@@ -99,23 +114,6 @@ CREATE TABLE administrador (
     FOREIGN KEY (id_producto_recogido_cliente) REFERENCES producto(id),
     FOREIGN KEY (id_cocina) REFERENCES cocina(id),
     FOREIGN KEY (id_domiciliario) REFERENCES domiciliario(id)
-);
-
--- Tabla 'caja'
-CREATE TABLE caja (
-    id INT PRIMARY KEY,
-    detalle_tarifa VARCHAR(100),
-    pago_pedido DECIMAL(10,2)
-);
-
--- Tabla 'cocina'
-CREATE TABLE cocina (
-    id INT PRIMARY KEY,
-    fecha_finalizada_preparacion DATE,
-    hora_finalizada_preparacion TIME,
-    nombre_producto VARCHAR(100),
-    descripcion_producto TEXT,
-    estado_producto VARCHAR(50)
 );
 
 -- Tabla 'accesibilidad'
