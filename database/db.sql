@@ -16,6 +16,8 @@ CREATE TABLE users (
     id_cliente INT,
     PRIMARY KEY (id)
 );
+ALTER TABLE users ADD COLUMN role ENUM('user', 'admin') DEFAULT 'user';
+
 ALTER TABLE users AUTO_INCREMENT = 1; 
 
 -- Tabla 'direcciones'
