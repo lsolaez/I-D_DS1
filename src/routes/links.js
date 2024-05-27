@@ -39,14 +39,11 @@ router.get('/', async (req, res) => {
     res.render('links/list', { productos });
 });
 
-
 //new para interfaz de usuario
 router.get('/listUsers', async (req, res) => {
     const productos = await pool.query('SELECT * FROM Producto');
     res.render('links/listUsers', { productos });
 });
-
-
 
 router.get('/delete/:id', async (req, res) => {
     const { id } = req.params;
@@ -80,7 +77,15 @@ router.post('/cart/add/:id', async (req, res) => {
         if (!req.session.cart) {
             req.session.cart = [];
         }
-        req.session.cart.push({ ...item, cartId: Date.now() });
+
+        const cartIndex = req.session.cart.findIndex(p => p.id === id);
+        if (cartIndex > -1) {
+            req.session.cart[cartIndex].cantidad++;
+        } else {
+            item.cantidad = 1;
+            req.session.cart.push({ ...item, cartId: Date.now() });
+        }
+
         res.json({ success: true, message: 'Product added to cart successfully!' });
     } else {
         res.json({ success: false, message: 'Product not found' });
@@ -89,14 +94,23 @@ router.post('/cart/add/:id', async (req, res) => {
 
 // Mostrar carrito
 router.get('/cart', (req, res) => {
-    res.render('links/cart', { cart: req.session.cart });
+    const cart = req.session.cart || [];
+    res.render('links/cart', { cart });
 });
 
-router.post('/cart/delete/:cartId', (req, res) => {
+
+// Eliminar producto del carrito
+router.post('/cart/delete/:cartId', async (req, res) => {
     const { cartId } = req.params;
     const cartIndex = req.session.cart.findIndex(item => item.cartId == cartId);
     if (cartIndex > -1) {
         req.session.cart.splice(cartIndex, 1);
+        
+        // Actualizar carrito en la base de datos
+        const userId = req.user.id;
+        const updatedCart = JSON.stringify(req.session.cart);
+        await pool.query('UPDATE users SET cart = ? WHERE id = ?', [updatedCart, userId]);
+
         res.json({ success: true, message: 'El producto ha sido eliminado correctamente.' });
     } else {
         res.status(404).json({ success: false, message: 'Producto no encontrado.' });

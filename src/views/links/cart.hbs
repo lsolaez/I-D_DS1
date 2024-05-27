@@ -28,9 +28,14 @@
     }
     .rectangle-left {
       grid-column: 1;
+      max-height: 500px; /* Ajusta este valor según tus necesidades */
+      overflow-y: auto;
     }
     .rectangle-right {
       grid-column: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .product {
       margin-bottom: 20px;
@@ -62,6 +67,18 @@
       cursor: pointer;
       font-size: 1.2em;
     }
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .qty-controls button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .subtotal {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -74,7 +91,13 @@
             <div class="product-details">
               <p>{{this.nombre}}</p>
               <p>{{this.descripcion}}</p>
-              <p>Precio: {{this.precio}}</p>
+              <p>Precio: ${{this.precio}}</p>
+              <div class="qty-controls">
+                <button class="change-qty" data-cart-id="{{this.cartId}}" data-action="decrease">-</button>
+                <span class="qty">{{this.cantidad}}</span>
+                <button class="change-qty" data-cart-id="{{this.cartId}}" data-action="increase">+</button>
+              </div>
+              <p class="subtotal">Subtotal: ${{multiply this.precio this.cantidad}}</p>
             </div>
             <div class="product-actions">
               <button class="delete-btn" data-cart-id="{{this.cartId}}">&times;</button>
@@ -85,8 +108,11 @@
         {{/each}}
       </div>
       <div class="rectangle rectangle-right">
-        <h2>Resumen del Pedido</h2>
-        <!-- Aquí puedes agregar el resumen del pedido -->
+        <div>
+          <h2>Resumen del Pedido</h2>
+          <p>Total: ${{total cart}}</p>
+        </div>
+        <button class="btn btn-primary finalize-purchase">Finalizar compra</button>
       </div>
     </div>
   </div>
@@ -95,43 +121,73 @@
   <script>
   $(document).ready(function() {
     $('.delete-btn').click(function(e) {
-          e.preventDefault();
-          var cartId = $(this).data('cart-id');
-          Swal.fire({
-              title: '¿Estás seguro?',
-              text: "No podrás revertir esto!",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Sí, eliminar!'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  $.ajax({
-                      url: '/links/cart/delete/' + cartId,
-                      type: 'POST',
-                      success: function(response) {
-                          Swal.fire(
-                              'Eliminado!',
-                              response.message,
-                              'success'
-                          ).then((result) => {
-                              if (result.isConfirmed || result.isDismissed) {
-                                  location.reload(); // Recarga la página para actualizar el estado del carrito
-                              }
-                          });
-                      },
-                      error: function(xhr, status, error) {
-                          Swal.fire(
-                              'Error!',
-                              'No se pudo eliminar el producto. Inténtalo de nuevo.',
-                              'error'
-                          );
-                      }
-                  });
-              }
-          });
+      e.preventDefault();
+      var cartId = $(this).data('cart-id');
+      Swal.fire({
+          title: '¿Estás seguro?',
+          text: "No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, eliminar!'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              $.ajax({
+                  url: '/links/cart/delete/' + cartId,
+                  type: 'POST',
+                  success: function(response) {
+                      Swal.fire(
+                          'Eliminado!',
+                          response.message,
+                          'success'
+                      ).then((result) => {
+                          if (result.isConfirmed || result.isDismissed) {
+                              location.reload(); // Recarga la página para actualizar el estado del carrito
+                          }
+                      });
+                  },
+                  error: function(xhr, status, error) {
+                      Swal.fire(
+                          'Error!',
+                          'No se pudo eliminar el producto. Inténtalo de nuevo.',
+                          'error'
+                      );
+                  }
+              });
+          }
       });
+    });
+
+    $('.change-qty').click(function(e) {
+      e.preventDefault();
+      const cartId = $(this).data('cart-id');
+      const action = $(this).data('action');
+      const qtyDisplay = $(this).siblings('.qty');
+      let currentQty = parseInt(qtyDisplay.text());
+
+      if (action === 'increase') {
+        currentQty++;
+      } else if (action === 'decrease' && currentQty > 1) {
+        currentQty--;
+      }
+
+      qtyDisplay.text(currentQty);
+
+      const price = parseFloat($(this).closest('.product-details').find('p:nth-child(3)').text().replace('Precio: $', ''));
+      const subtotal = price * currentQty;
+      $(this).closest('.product').find('.subtotal').text(`Subtotal: $${subtotal.toFixed(2)}`);
+      updateTotal();
+    });
+
+    function updateTotal() {
+      let total = 0;
+      $('.subtotal').each(function() {
+        const subtotal = parseFloat($(this).text().replace('Subtotal: $', ''));
+        total += subtotal;
+      });
+      $('.rectangle-right p').text(`Total: $${total.toFixed(2)}`);
+    }
   });
   </script>
 </body>
