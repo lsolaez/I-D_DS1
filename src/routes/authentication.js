@@ -29,31 +29,41 @@ router.get('/signin', (req, res) => {
 });
 
 router.post('/signin', [
-  body('username').notEmpty().withMessage('Username is required'),
-  body('password').notEmpty().withMessage('Password is required'),
+    body('username').notEmpty().withMessage('Username is required'),
+    body('password').notEmpty().withMessage('Password is required'),
 ], (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-  }
-  passport.authenticate('local.signin', (err, user, info) => {
-      if (err) {
-          return next(err);
-      }
-      if (!user) {
-          return res.redirect('/signin');
-      }
-      req.logIn(user, async (err) => {
-          if (err) {
-              return next(err);
-          }
-          const userCart = user.cart ? JSON.parse(user.cart) : [];
-          req.session.cart = userCart;
-          return res.redirect('/links');
-      });
-  })(req, res, next);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorsMessages = errors.array().map(e => e.msg).join('<br>');
+        const script = `Swal.fire('Error', '${errorsMessages}', 'error');`;
+        return res.render('auth/signin', { script });
+    }
+    passport.authenticate('local.signin', (err, user, info = {}) => { // Añade un valor por defecto para info
+        if (err) {
+            const script = `Swal.fire('Error', 'Login failed, please try again.', 'error');`;
+            return res.render('auth/signin', { script });
+        }
+        if (!user) {
+            const script = `Swal.fire('Error', '${info.message || 'Authentication failed'}', 'error');`;
+            return res.render('auth/signin', { script });
+        }
+        req.logIn(user, async (err) => {
+            if (err) {
+                const script = `Swal.fire('Error', 'Session could not be created', 'error');`;
+                return res.render('auth/signin', { script });
+            }
+            const userCart = user.cart ? JSON.parse(user.cart) : [];
+            req.session.cart = userCart;
+            if (user.role === 'admin') {
+                return res.redirect('/links');
+            } else if (user.role === 'usuario') {
+                return res.redirect('/links/listUsers');
+            } else {
+                return res.redirect('/profile');
+            }
+        });
+    })(req, res, next);
 });
-
 
 router.get('/profile', isLoggedIn, (req, res) => {
     res.render('profile');

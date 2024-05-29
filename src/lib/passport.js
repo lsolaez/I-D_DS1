@@ -8,11 +8,12 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, username, password, done) => {
-    const { id_cliente } = req.body;
+    const { id_cliente, role } = req.body;
     let newUser = {
         username,
         password,
-        id_cliente
+        id_cliente,
+        role
     };
     newUser.password = await helpers.encryptPassword(password);
     // Saving in the Database

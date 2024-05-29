@@ -211,7 +211,13 @@
                   response.message,
                   'success'
                 ).then(() => {
-                  window.location.href = '/links';
+                  if (response.role === 'admin') {
+                    window.location.href = '/links';
+                  } else if (response.role === 'usuario') {
+                    window.location.href = '/links/listUsers';
+                  } else {
+                    window.location.href = '/profile';
+                  }
                 });
               } else {
                 Swal.fire(

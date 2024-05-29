@@ -3,11 +3,11 @@ const router = express.Router();
 const pool = require('../database');
 const { isLoggedIn } = require('../lib/auth');
 
-router.get('/add',isLoggedIn, (req, res) => {
+router.get('/add', isLoggedIn, (req, res) => {
     res.render('links/add', { script: '' });
 });
 
-router.post('/add',isLoggedIn, async (req, res) => {
+router.post('/add', isLoggedIn, async (req, res) => {
     const { id, imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
 
     // Validación de código único
@@ -40,26 +40,26 @@ router.get('/', isLoggedIn, async (req, res) => {
     res.render('links/list', { productos });
 });
 
-//new para interfaz de usuario
-router.get('/listUsers',isLoggedIn, async (req, res) => {
+// Nueva ruta para interfaz de usuario
+router.get('/listUsers', isLoggedIn, async (req, res) => {
     const productos = await pool.query('SELECT * FROM Producto');
     res.render('links/listUsers', { productos });
 });
 
-router.get('/delete/:id',isLoggedIn, async (req, res) => {
+router.get('/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     await pool.query('DELETE FROM producto WHERE id = ?', [id]);
     req.flash('success', 'Product Removed Successfully');
     res.redirect('/links');
 });
 
-router.get('/edit/:id',isLoggedIn, async (req, res) => {
+router.get('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const productos = await pool.query('SELECT * FROM producto WHERE id = ?', [id]);
     res.render('links/edit', { productos: productos[0] });
 });
 
-router.post('/edit/:id',isLoggedIn, async (req, res) => {
+router.post('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const { imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
     const updatedProduct = { imagen, nombre, descripcion, precio, categoria, disponible };
@@ -69,7 +69,7 @@ router.post('/edit/:id',isLoggedIn, async (req, res) => {
 });
 
 // Agregar producto al carrito
-router.post('/cart/add/:id',isLoggedIn, async (req, res) => {
+router.post('/cart/add/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const producto = await pool.query('SELECT * FROM producto WHERE id = ?', [id]);
 
@@ -94,11 +94,11 @@ router.post('/cart/add/:id',isLoggedIn, async (req, res) => {
 });
 
 // Mostrar carrito
-router.get('/cart',isLoggedIn, (req, res) => {
+router.get('/cart', isLoggedIn, (req, res) => {
     res.render('links/cart', { cart: req.session.cart });
 });
 
-router.post('/cart/delete/:cartId',isLoggedIn, (req, res) => {
+router.post('/cart/delete/:cartId', isLoggedIn, (req, res) => {
     const { cartId } = req.params;
     const cartIndex = req.session.cart.findIndex(item => item.cartId == cartId);
     if (cartIndex > -1) {
@@ -110,7 +110,7 @@ router.post('/cart/delete/:cartId',isLoggedIn, (req, res) => {
 });
 
 // Finalizar compra
-router.post('/cart/checkout',isLoggedIn, async (req, res) => {
+router.post('/cart/checkout', isLoggedIn, async (req, res) => {
     const user = req.user;
     if (!user) {
         return res.json({ success: false, message: 'Usuario no autenticado.' });
@@ -143,7 +143,9 @@ router.post('/cart/checkout',isLoggedIn, async (req, res) => {
         }
 
         req.session.cart = []; // Vaciar el carrito después de la compra
-        res.json({ success: true, message: 'Compra realizada con éxito.' });
+        await pool.query('UPDATE users SET cart = ? WHERE id = ?', [JSON.stringify(req.session.cart), id_usuario]);
+
+        res.json({ success: true, message: 'Compra realizada con éxito.', role: user.role });
     } catch (error) {
         console.error(error);
         res.json({ success: false, message: 'No se pudo realizar la compra.' });
