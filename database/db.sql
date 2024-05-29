@@ -55,6 +55,27 @@ CREATE TABLE cocina (
     descripcion_producto TEXT,
     estado_producto VARCHAR(50)
 );
+
+-- Tabla 'compras'
+CREATE TABLE compras (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_cliente INT,
+    fecha_compra DATE,
+    hora_compra TIME,
+    total DECIMAL(10,2),
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id)
+);
+
+-- Tabla 'detalle_compra'
+CREATE TABLE detalle_compra (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_compra INT,
+    id_producto INT,
+    cantidad INT,
+    precio_unitario DECIMAL(10,2),
+    FOREIGN KEY (id_compra) REFERENCES compras(id),
+    FOREIGN KEY (id_producto) REFERENCES producto(id)
+);
 -- Tabla 'licencia_conduccion'
 CREATE TABLE licencia_conduccion (
     id INT PRIMARY KEY,

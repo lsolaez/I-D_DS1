@@ -94,26 +94,58 @@ router.post('/cart/add/:id', async (req, res) => {
 
 // Mostrar carrito
 router.get('/cart', (req, res) => {
-    const cart = req.session.cart || [];
-    res.render('links/cart', { cart });
+    res.render('links/cart', { cart: req.session.cart });
 });
 
-
-// Eliminar producto del carrito
-router.post('/cart/delete/:cartId', async (req, res) => {
+router.post('/cart/delete/:cartId', (req, res) => {
     const { cartId } = req.params;
     const cartIndex = req.session.cart.findIndex(item => item.cartId == cartId);
     if (cartIndex > -1) {
         req.session.cart.splice(cartIndex, 1);
-        
-        // Actualizar carrito en la base de datos
-        const userId = req.user.id;
-        const updatedCart = JSON.stringify(req.session.cart);
-        await pool.query('UPDATE users SET cart = ? WHERE id = ?', [updatedCart, userId]);
-
         res.json({ success: true, message: 'El producto ha sido eliminado correctamente.' });
     } else {
         res.status(404).json({ success: false, message: 'Producto no encontrado.' });
+    }
+});
+
+// Finalizar compra
+router.post('/cart/checkout', async (req, res) => {
+    const user = req.user;
+    if (!user) {
+        return res.json({ success: false, message: 'Usuario no autenticado.' });
+    }
+
+    const { id: id_usuario } = user;
+    if (!req.session.cart || req.session.cart.length === 0) {
+        return res.json({ success: false, message: 'El carrito está vacío.' });
+    }
+
+    try {
+        // Verificar si el usuario está en la tabla cliente
+        const clienteResult = await pool.query('SELECT * FROM cliente WHERE id = ?', [id_usuario]);
+        if (clienteResult.length === 0) {
+            // Si no está, insertar el usuario en la tabla cliente
+            await pool.query('INSERT INTO cliente (id, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, user.username, '']);
+        }
+
+        const total = req.session.cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+        const fechaCompra = new Date();
+        const fechaCompraStr = fechaCompra.toISOString().slice(0, 10);
+        const horaCompraStr = fechaCompra.toISOString().slice(11, 19);
+
+        const result = await pool.query('INSERT INTO compras (id_cliente, fecha_compra, hora_compra, total) VALUES (?, ?, ?, ?)', [id_usuario, fechaCompraStr, horaCompraStr, total]);
+
+        const id_compra = result.insertId;
+
+        for (const item of req.session.cart) {
+            await pool.query('INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', [id_compra, item.id, item.cantidad, item.precio]);
+        }
+
+        req.session.cart = []; // Vaciar el carrito después de la compra
+        res.json({ success: true, message: 'Compra realizada con éxito.' });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, message: 'No se pudo realizar la compra.' });
     }
 });
 

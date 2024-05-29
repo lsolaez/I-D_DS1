@@ -188,6 +188,50 @@
       });
       $('.rectangle-right p').text(`Total: $${total.toFixed(2)}`);
     }
+
+    $('.finalize-purchase').click(function(e) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¿Deseas finalizar la compra?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, finalizar compra!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: '/links/cart/checkout',
+            type: 'POST',
+            success: function(response) {
+              if (response.success) {
+                Swal.fire(
+                  'Completado!',
+                  response.message,
+                  'success'
+                ).then(() => {
+                  window.location.href = '/links';
+                });
+              } else {
+                Swal.fire(
+                  'Error!',
+                  response.message,
+                  'error'
+                );
+              }
+            },
+            error: function(xhr, status, error) {
+              Swal.fire(
+                'Error!',
+                'No se pudo finalizar la compra. Inténtalo de nuevo.',
+                'error'
+              );
+            }
+          });
+        }
+      });
+    });
   });
   </script>
 </body>
