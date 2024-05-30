@@ -112,6 +112,31 @@
           <h2>Resumen del Pedido</h2>
           <p>Total: ${{total cart}}</p>
         </div>
+        <div>
+          <h3>Opciones de Entrega</h3>
+          <label>
+            <input type="radio" name="deliveryOption" value="domicilio">
+            Entrega a domicilio
+          </label>
+          <div id="direccionDomicilio" style="display: none;">
+            <h4>Direcciones Guardadas</h4>
+            {{#each direcciones}}
+              <label>
+                <input type="radio" name="direccion" value="{{this.id}}">
+                {{this.direccionCliente}}
+              </label><br>
+            {{/each}}
+            <button id="addDireccionBtn">Agregar nueva dirección</button>
+            <div id="nuevaDireccion" style="display: none;">
+              <input type="text" id="nuevaDireccionInput" placeholder="Nueva Dirección">
+              <button id="saveDireccionBtn">Guardar Dirección</button>
+            </div>
+          </div>
+          <label>
+            <input type="radio" name="deliveryOption" value="tienda">
+            Recoger en tienda
+          </label>
+        </div>
         <button class="btn btn-primary finalize-purchase">Finalizar compra</button>
       </div>
     </div>
@@ -120,42 +145,76 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
   $(document).ready(function() {
+    $('input[name="deliveryOption"]').change(function() {
+      if ($(this).val() === 'domicilio') {
+        $('#direccionDomicilio').show();
+      } else {
+        $('#direccionDomicilio').hide();
+      }
+    });
+
+    $('#addDireccionBtn').click(function() {
+      $('#nuevaDireccion').show();
+    });
+
+    $('#saveDireccionBtn').click(function() {
+      const nuevaDireccion = $('#nuevaDireccionInput').val();
+      if (nuevaDireccion) {
+        $.ajax({
+          url: '/links/addDireccion',
+          type: 'POST',
+          data: { direccion: nuevaDireccion },
+          success: function(response) {
+            if (response.success) {
+              Swal.fire('Guardado!', 'Dirección guardada con éxito.', 'success').then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire('Error!', response.message, 'error');
+            }
+          }
+        });
+      } else {
+        Swal.fire('Error!', 'Por favor ingrese una dirección.', 'error');
+      }
+    });
+
     $('.delete-btn').click(function(e) {
       e.preventDefault();
       var cartId = $(this).data('cart-id');
       Swal.fire({
-          title: '¿Estás seguro?',
-          text: "No podrás revertir esto!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Sí, eliminar!'
+        title: '¿Estás seguro?',
+        text: "No podrás revertir esto!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar!'
       }).then((result) => {
-          if (result.isConfirmed) {
-              $.ajax({
-                  url: '/links/cart/delete/' + cartId,
-                  type: 'POST',
-                  success: function(response) {
-                      Swal.fire(
-                          'Eliminado!',
-                          response.message,
-                          'success'
-                      ).then((result) => {
-                          if (result.isConfirmed || result.isDismissed) {
-                              location.reload(); // Recarga la página para actualizar el estado del carrito
-                          }
-                      });
-                  },
-                  error: function(xhr, status, error) {
-                      Swal.fire(
-                          'Error!',
-                          'No se pudo eliminar el producto. Inténtalo de nuevo.',
-                          'error'
-                      );
-                  }
+        if (result.isConfirmed) {
+          $.ajax({
+            url: '/links/cart/delete/' + cartId,
+            type: 'POST',
+            success: function(response) {
+              Swal.fire(
+                'Eliminado!',
+                response.message,
+                'success'
+              ).then((result) => {
+                if (result.isConfirmed || result.isDismissed) {
+                  location.reload(); // Recarga la página para actualizar el estado del carrito
+                }
               });
-          }
+            },
+            error: function(xhr, status, error) {
+              Swal.fire(
+                'Error!',
+                'No se pudo eliminar el producto. Inténtalo de nuevo.',
+                'error'
+              );
+            }
+          });
+        }
       });
     });
 
@@ -191,6 +250,16 @@
 
     $('.finalize-purchase').click(function(e) {
       e.preventDefault();
+      const deliveryOption = $('input[name="deliveryOption"]:checked').val();
+      let direccionId = null;
+      if (deliveryOption === 'domicilio') {
+        direccionId = $('input[name="direccion"]:checked').val();
+        if (!direccionId) {
+          Swal.fire('Error!', 'Por favor seleccione o agregue una dirección.', 'error');
+          return;
+        }
+      }
+
       Swal.fire({
         title: '¿Estás seguro?',
         text: "¿Deseas finalizar la compra?",
@@ -204,6 +273,7 @@
           $.ajax({
             url: '/links/cart/checkout',
             type: 'POST',
+            data: { deliveryOption, direccionId },
             success: function(response) {
               if (response.success) {
                 Swal.fire(

@@ -22,12 +22,12 @@ ALTER TABLE users AUTO_INCREMENT = 1;
 
 -- Tabla 'direcciones'
 CREATE TABLE direcciones (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     direccionCliente VARCHAR(100),
     id_cliente INT,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id)
 );
-
+ALTER TABLE direcciones AUTO_INCREMENT = 1; 
 -- Tabla 'producto'
 CREATE TABLE producto (
     id INT PRIMARY KEY,

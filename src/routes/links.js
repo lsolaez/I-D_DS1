@@ -10,20 +10,18 @@ router.get('/add', isLoggedIn, (req, res) => {
 router.post('/add', isLoggedIn, async (req, res) => {
     const { id, imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
 
-    // Validación de código único
     const existingProduct = await pool.query('SELECT * FROM Producto WHERE id = ?', [id]);
     if (existingProduct.length > 0) {
         const script = `Swal.fire('Error', 'Ya existe un producto con el mismo código.', 'error');`;
         return res.render('links/add', { script });
     }
-    // Validaciones de contenido de texto
+
     const isValidText = (text) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/.test(text);
     if (!isValidText(nombre) || !isValidText(descripcion) || !isValidText(categoria) || !isValidText(disponible)) {
         const script = `Swal.fire('Error', 'Los campos de texto deben contener solo letras.', 'error');`;
         return res.render('links/add', { script });
     }
 
-    // Validación de precio entero
     if (!Number.isInteger(Number(precio))) {
         const script = `Swal.fire('Error', 'El precio debe ser un número entero.', 'error');`;
         return res.render('links/add', { script });
@@ -40,7 +38,6 @@ router.get('/', isLoggedIn, async (req, res) => {
     res.render('links/list', { productos });
 });
 
-// Nueva ruta para interfaz de usuario
 router.get('/listUsers', isLoggedIn, async (req, res) => {
     const productos = await pool.query('SELECT * FROM Producto');
     res.render('links/listUsers', { productos });
@@ -94,8 +91,9 @@ router.post('/cart/add/:id', isLoggedIn, async (req, res) => {
 });
 
 // Mostrar carrito
-router.get('/cart', isLoggedIn, (req, res) => {
-    res.render('links/cart', { cart: req.session.cart });
+router.get('/cart', isLoggedIn, async (req, res) => {
+    const direcciones = await pool.query('SELECT * FROM direcciones WHERE id_cliente = ?', [req.user.id]);
+    res.render('links/cart', { cart: req.session.cart, direcciones });
 });
 
 router.post('/cart/delete/:cartId', isLoggedIn, (req, res) => {
@@ -109,6 +107,18 @@ router.post('/cart/delete/:cartId', isLoggedIn, (req, res) => {
     }
 });
 
+// Guardar nueva dirección
+router.post('/addDireccion', isLoggedIn, async (req, res) => {
+    const { direccion } = req.body;
+    const id_cliente = req.user.id;
+    try {
+        await pool.query('INSERT INTO direcciones (direccionCliente, id_cliente) VALUES (?, ?)', [direccion, id_cliente]);
+        res.json({ success: true, message: 'Dirección guardada con éxito.' });
+    } catch (error) {
+        res.json({ success: false, message: 'No se pudo guardar la dirección.' });
+    }
+});
+
 // Finalizar compra
 router.post('/cart/checkout', isLoggedIn, async (req, res) => {
     const user = req.user;
@@ -117,6 +127,7 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
     }
 
     const { id: id_usuario } = user;
+    const { deliveryOption, direccionId } = req.body;
     if (!req.session.cart || req.session.cart.length === 0) {
         return res.json({ success: false, message: 'El carrito está vacío.' });
     }
@@ -143,8 +154,6 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         }
 
         req.session.cart = []; // Vaciar el carrito después de la compra
-        await pool.query('UPDATE users SET cart = ? WHERE id = ?', [JSON.stringify(req.session.cart), id_usuario]);
-
         res.json({ success: true, message: 'Compra realizada con éxito.', role: user.role });
     } catch (error) {
         console.error(error);
