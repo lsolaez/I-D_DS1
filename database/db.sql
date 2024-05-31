@@ -14,9 +14,10 @@ CREATE TABLE users (
     username varchar(50) NOT NULL,
     password varchar(60) NOT NULL,
     id_cliente INT,
+    cart json,
     PRIMARY KEY (id)
 );
-ALTER TABLE users ADD COLUMN role ENUM('user', 'admin') DEFAULT 'user';
+ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin') DEFAULT 'usuario';
 
 ALTER TABLE users AUTO_INCREMENT = 1; 
 
