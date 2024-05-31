@@ -108,16 +108,35 @@ router.post('/cart/delete/:cartId', isLoggedIn, (req, res) => {
 });
 
 // Guardar nueva dirección
+// Guardar nueva dirección
 router.post('/addDireccion', isLoggedIn, async (req, res) => {
     const { direccion } = req.body;
     const id_cliente = req.user.id;
+    
     try {
+        // Verificar si el cliente existe en la tabla cliente
+        const clienteResult = await pool.query('SELECT * FROM cliente WHERE id = ?', [id_cliente]);
+        if (clienteResult.length === 0) {
+            // Insertar el cliente en la tabla cliente si no existe
+            await pool.query('INSERT INTO cliente (id, nombre, apellido) VALUES (?, ?, ?)', [id_cliente, req.user.username, '']);
+        }
+
+        // Verificar si la dirección ya existe para este usuario
+        const existingDireccion = await pool.query('SELECT * FROM direcciones WHERE direccionCliente = ? AND id_cliente = ?', [direccion, id_cliente]);
+        if (existingDireccion.length > 0) {
+            return res.json({ success: false, message: 'Esta dirección ya existe.' });
+        }
+
+        // Insertar la nueva dirección en la base de datos
         await pool.query('INSERT INTO direcciones (direccionCliente, id_cliente) VALUES (?, ?)', [direccion, id_cliente]);
         res.json({ success: true, message: 'Dirección guardada con éxito.' });
     } catch (error) {
+        console.error(error);
         res.json({ success: false, message: 'No se pudo guardar la dirección.' });
     }
 });
+
+
 
 // Finalizar compra
 router.post('/cart/checkout', isLoggedIn, async (req, res) => {
