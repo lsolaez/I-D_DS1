@@ -108,7 +108,6 @@ router.post('/cart/delete/:cartId', isLoggedIn, (req, res) => {
 });
 
 // Guardar nueva dirección
-// Guardar nueva dirección
 router.post('/addDireccion', isLoggedIn, async (req, res) => {
     const { direccion } = req.body;
     const id_cliente = req.user.id;
