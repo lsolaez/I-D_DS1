@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Añadir Producto</title>
-  <!-- Asegúrate de incluir CSS de Bootstrap para que los estilos se apliquen correctamente -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
 <body>
   <div class="container p-4">
       <div class="row">
@@ -18,10 +9,10 @@
                   <div class="card-body">
                       <form action="/links/add" method="POST">
                           <div class="form-group"> 
-                              <input type="text" class="form-control" name="codigo" placeholder="Código del producto" autofocus>
+                              <input type="text" class="form-control" name="id" placeholder="Código del producto" autofocus>
                           </div>
                           <div class="form-group">
-                              <input type="text" class="form-control" name="imagen" placeholder="URL de la imagen">
+                              <input type="text" class="form-control" name="urlimagen" placeholder="URL de la imagen">
                           </div>
                           <div class="form-group">
                               <input type="text" class="form-control" name="nombre" placeholder="Nombre del producto">
@@ -36,7 +27,7 @@
                               <input type="text" class="form-control" name="categoria" placeholder="Categoría">
                           </div>
                           <div class="form-group">
-                              <input type="text" class="form-control" name="disponible" placeholder="Disponibilidad">
+                              <input type="text" class="form-control" name="confirmaciondedisponibilidad" placeholder="Disponibilidad">
                           </div>
                           <div class="form-group d-grid gap-2">
                               <button type="submit" class="btn btn-success btn-block">Guardar</button>
@@ -46,6 +37,9 @@
               </div>
           </div>
       </div>
+  </div>
+  <div style="position: fixed; bottom: 20px; left: 20px;">
+    <a href="/links/" class="btn btn-primary">Volver</a>
   </div>
   {{#if script}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

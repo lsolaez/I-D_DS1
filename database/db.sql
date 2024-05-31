@@ -17,7 +17,7 @@ CREATE TABLE users (
     cart json,
     PRIMARY KEY (id)
 );
-ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin') DEFAULT 'usuario';
+ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'cocinero') DEFAULT 'usuario';
 
 ALTER TABLE users AUTO_INCREMENT = 1; 
 
@@ -77,20 +77,24 @@ CREATE TABLE detalle_compra (
     FOREIGN KEY (id_compra) REFERENCES compras(id),
     FOREIGN KEY (id_producto) REFERENCES producto(id)
 );
--- Tabla 'licencia_conduccion'
-CREATE TABLE licencia_conduccion (
-    id INT PRIMARY KEY,
-    fecha_inicio_licencia DATE,
-    finalizacion_licencia DATE
+
+CREATE TABLE empleados (
+    nombre_completo VARCHAR(250) NOT NULL,
+    numero_identificacion VARCHAR(50) PRIMARY KEY,
+    telefono VARCHAR(20) NOT NULL,
+    roles VARCHAR(50) NOT NULL
 );
+
 
 -- Tabla 'domiciliario'
 CREATE TABLE domiciliario (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    numero_identificacion varchar(50),
     medio_transporte VARCHAR(50),
-    horario_disponible TIME,
-    id_licencia_conduccion INT,
-    FOREIGN KEY (id_licencia_conduccion) REFERENCES licencia_conduccion(id)
+    horario_disponible DATETIME default CURRENT_TIMESTAMP,
+    licencia_conduccion INT,
+    fecha_fin_licencia DATE,
+    FOREIGN KEY (numero_identificacion) REFERENCES empleados(numero_identificacion)
 );
 
 -- Tabla 'pedido_domicilio'

@@ -8,16 +8,28 @@ router.get('/add', isLoggedIn, (req, res) => {
 });
 
 router.post('/add', isLoggedIn, async (req, res) => {
-    const { id, imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
+    const { id, urlimagen, nombre, descripcion, precio, categoria, confirmaciondedisponibilidad } = req.body;
 
-    const existingProduct = await pool.query('SELECT * FROM Producto WHERE id = ?', [id]);
+    // Verificar que el campo 'id' no esté vacío
+    if (!id) {
+        const script = `Swal.fire('Error', 'El campo "Código del producto" no puede estar vacío.', 'error');`;
+        return res.render('links/add', { script });
+    }
+
+    // Verificar que 'id' sea un número entero
+    if (!Number.isInteger(Number(id))) {
+        const script = `Swal.fire('Error', 'El campo "Código del producto" debe ser un número entero.', 'error');`;
+        return res.render('links/add', { script });
+    }
+
+    const existingProduct = await pool.query('SELECT * FROM producto WHERE id = ?', [id]);
     if (existingProduct.length > 0) {
         const script = `Swal.fire('Error', 'Ya existe un producto con el mismo código.', 'error');`;
         return res.render('links/add', { script });
     }
 
     const isValidText = (text) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/.test(text);
-    if (!isValidText(nombre) || !isValidText(descripcion) || !isValidText(categoria) || !isValidText(disponible)) {
+    if (!isValidText(nombre) || !isValidText(descripcion) || !isValidText(categoria) || !isValidText(confirmaciondedisponibilidad)) {
         const script = `Swal.fire('Error', 'Los campos de texto deben contener solo letras.', 'error');`;
         return res.render('links/add', { script });
     }
@@ -27,19 +39,19 @@ router.post('/add', isLoggedIn, async (req, res) => {
         return res.render('links/add', { script });
     }
 
-    const newProduct = { id, imagen, nombre, descripcion, precio, categoria, disponible };
-    await pool.query('INSERT INTO Producto SET ?', [newProduct]);
+    const newProduct = { id, urlimagen, nombre, descripcion, precio, categoria, confirmaciondedisponibilidad };
+    await pool.query('INSERT INTO producto SET ?', [newProduct]);
     const script = `Swal.fire('Éxito', 'Producto guardado exitosamente.', 'success');`;
     res.render('links/add', { script });
 });
 
 router.get('/', isLoggedIn, async (req, res) => {
-    const productos = await pool.query('SELECT * FROM Producto');
+    const productos = await pool.query('SELECT * FROM producto');
     res.render('links/list', { productos });
 });
 
 router.get('/listUsers', isLoggedIn, async (req, res) => {
-    const productos = await pool.query('SELECT * FROM Producto');
+    const productos = await pool.query('SELECT * FROM producto');
     res.render('links/listUsers', { productos });
 });
 
@@ -58,8 +70,8 @@ router.get('/edit/:id', isLoggedIn, async (req, res) => {
 
 router.post('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    const { imagen, nombre, descripcion, precio, categoria, disponible } = req.body;
-    const updatedProduct = { imagen, nombre, descripcion, precio, categoria, disponible };
+    const { urlimagen, nombre, descripcion, precio, categoria, confirmaciondedisponibilidad } = req.body;
+    const updatedProduct = { urlimagen, nombre, descripcion, precio, categoria, confirmaciondedisponibilidad };
     await pool.query('UPDATE producto SET ? WHERE id = ?', [updatedProduct, id]);
     req.flash('success', 'Product Updated Successfully');
     res.redirect('/links');
@@ -111,7 +123,7 @@ router.post('/cart/delete/:cartId', isLoggedIn, (req, res) => {
 router.post('/addDireccion', isLoggedIn, async (req, res) => {
     const { direccion } = req.body;
     const id_cliente = req.user.id;
-    
+
     try {
         // Verificar si el cliente existe en la tabla cliente
         const clienteResult = await pool.query('SELECT * FROM cliente WHERE id = ?', [id_cliente]);
@@ -134,8 +146,6 @@ router.post('/addDireccion', isLoggedIn, async (req, res) => {
         res.json({ success: false, message: 'No se pudo guardar la dirección.' });
     }
 });
-
-
 
 // Finalizar compra
 router.post('/cart/checkout', isLoggedIn, async (req, res) => {
@@ -179,6 +189,56 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
     }
 });
 
+router.get('/empleado', isLoggedIn, (req, res) => {
+    res.render('links/empleados', { script: '' });
+});
 
+router.post('/empleado', isLoggedIn, async (req, res) => {
+    const { username, password, roles, nombre_completo, id, telefono, tipo_vehiculo, numero_licencia, fecha_vencimiento_licencia } = req.body;
+
+    const existingUser = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+    if (existingUser.length > 0) {
+        const script = `Swal.fire('Error', 'Ya existe un usuario con el mismo nombre de usuario.', 'error');`;
+        return res.render('links/empleados', { script });
+    }
+
+    const isValidText = (text) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/.test(text);
+    if (!isValidText(username) || !isValidText(roles)) {
+        const script = `Swal.fire('Error', 'Los campos de texto deben contener solo letras.', 'error');`;
+        return res.render('links/empleados', { script });
+    }
+
+    if (password.length < 6) {
+        const script = `Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres.', 'error');`;
+        return res.render('links/empleados', { script });
+    }
+
+    const encryptedPassword = await helpers.encryptPassword(password)
+    const newUser={
+        username,
+        password: encryptedPassword,
+        roles
+    };
+    await pool.query('INSERT INTO users SET ?', [newUser]);
+    const newEmployee ={
+        nombre_completo,
+        numero_identificacion: id,
+        telefono,
+        roles
+    };
+    await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
+    if(roles==='domiciliario'){
+        const newDomiciliario = {
+            numero_identificacion: id,
+            medio_transporte: roles === 'domiciliario' ? tipo_vehiculo : null,
+            licencia_conduccion: (tipo_vehiculo === 'moto' || tipo_vehiculo === 'carro') ? numero_licencia : null,
+            fecha_fin_licencia: (tipo_vehiculo === 'moto' || tipo_vehiculo === 'carro') ? fecha_vencimiento_licencia : null
+        };
+        await pool.query('INSERT INTO domiciliario SET ?', [newDomiciliario]);
+    }
+
+    const script = `Swal.fire('Éxito', 'Empleado guardado exitosamente.', 'success');`;
+    res.render('links/empleados', { script });
+});
 
 module.exports = router;
