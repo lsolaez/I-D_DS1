@@ -276,14 +276,15 @@
             data: { deliveryOption, direccionId },
             success: function(response) {
               if (response.success) {
+                console.log("Roles: ", response.roles);
                 Swal.fire(
                   'Completado!',
                   response.message,
                   'success'
                 ).then(() => {
-                  if (response.role === 'admin') {
+                  if (response.roles === 'admin') {
                     window.location.href = '/links';
-                  } else if (response.role === 'usuario') {
+                  } else if (response.roles === 'usuario') {
                     window.location.href = '/links/listUsers';
                   } else {
                     window.location.href = '/profile';

@@ -172,11 +172,13 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         }
 
         req.session.cart = []; // Vaciar el carrito después de la compra
-        res.json({ success: true, message: 'Compra realizada con éxito.', role: user.role });
+        res.json({ success: true, message: 'Compra realizada con éxito.', roles: user.roles });
     } catch (error) {
         console.error(error);
         res.json({ success: false, message: 'No se pudo realizar la compra.' });
     }
 });
+
+
 
 module.exports = router;
