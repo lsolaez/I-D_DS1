@@ -17,10 +17,27 @@ router.post('/signup', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    passport.authenticate('local.signup', {
-        successRedirect: '/links',
-        failureRedirect: '/signup',
-        failureFlash: true
+    passport.authenticate('local.signup', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.redirect('/signup');
+        }
+        req.logIn(user, async (err) => {
+            if (err) {
+                return next(err);
+            }
+            const userCart = user.cart ? JSON.parse(user.cart) : [];
+            req.session.cart = userCart;
+            if (user.roles === 'admin') {
+                return res.redirect('/links');
+            } else if (user.roles === 'usuario') {
+                return res.redirect('/links/listUsers');
+            } else {
+                return res.redirect('/profile');
+            }
+        });
     })(req, res, next);
 });
 
@@ -38,7 +55,7 @@ router.post('/signin', [
         const script = `Swal.fire('Error', '${errorsMessages}', 'error');`;
         return res.render('auth/signin', { script });
     }
-    passport.authenticate('local.signin', (err, user, info = {}) => { // Añade un valor por defecto para info
+    passport.authenticate('local.signin', (err, user, info = {}) => {
         if (err) {
             const script = `Swal.fire('Error', 'Login failed, please try again.', 'error');`;
             return res.render('auth/signin', { script });
@@ -54,9 +71,9 @@ router.post('/signin', [
             }
             const userCart = user.cart ? JSON.parse(user.cart) : [];
             req.session.cart = userCart;
-            if (user.role === 'admin') {
+            if (user.roles === 'admin') {
                 return res.redirect('/links');
-            } else if (user.role === 'usuario') {
+            } else if (user.roles === 'usuario') {
                 return res.redirect('/links/listUsers');
             } else {
                 return res.redirect('/profile');
