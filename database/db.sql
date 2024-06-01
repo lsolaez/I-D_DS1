@@ -50,14 +50,13 @@ CREATE TABLE caja (
     pago_pedido DECIMAL(10,2)
 );
 -- Tabla 'cocina'
-CREATE TABLE cocina (
-    id INT PRIMARY KEY,
-    fecha_finalizada_preparacion DATE,
-    hora_finalizada_preparacion TIME,
-    nombre_producto VARCHAR(100),
-    descripcion_producto TEXT,
-    estado_producto VARCHAR(50)
+CREATE TABLE pedidos_cocina (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_compra INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'pendiente',
+    FOREIGN KEY (id_compra) REFERENCES compras(id)
 );
+ALTER TABLE pedidos_cocina AUTO_INCREMENT = 1;
 
 -- Tabla 'compras'
 CREATE TABLE compras (

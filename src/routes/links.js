@@ -183,30 +183,8 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
             await pool.query('INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', [id_compra, item.id, item.cantidad, item.precio]);
         }
 
-        if (deliveryOption === 'domicilio') {
-            // Buscar domiciliario disponible estilo FIFO
-            const domiciliarioResult = await pool.query(`
-                SELECT id
-                FROM domiciliario
-                WHERE estado = 'Si'
-                ORDER BY horario_disponible ASC
-                LIMIT 1
-            `);
-            
-            if (domiciliarioResult.length > 0) {
-                const id_domiciliario = domiciliarioResult[0].id;
-                const fechaEnvio = new Date(fechaCompra.getTime() + 5 * 60000); // 5 minutos después de la compra
-                const fechaEnvioStr = fechaEnvio.toISOString().slice(0, 10);
-                const horaEnvioStr = fechaEnvio.toISOString().slice(11, 19);
-
-                await pool.query('INSERT INTO domicilios (id_compra, id_domiciliario, fecha_envio, hora_envio) VALUES (?, ?, ?, ?)', [id_compra, id_domiciliario, fechaEnvioStr, horaEnvioStr]);
-
-                // Actualizar estado del domiciliario
-                await pool.query('UPDATE domiciliario SET estado = ?, horario_disponible = ? WHERE id = ?', ['No', null, id_domiciliario]);
-            } else {
-                return res.json({ success: false, message: 'No hay domiciliarios disponibles.' });
-            }
-        }
+        // Marcar el pedido como pendiente en la cocina
+        await pool.query('INSERT INTO pedidos_cocina (id_compra, estado) VALUES (?, ?)', [id_compra, 'pendiente']);
 
         req.session.cart = []; // Vaciar el carrito después de la compra
         res.json({ success: true, message: 'Compra realizada con éxito.', roles: user.roles });
@@ -215,6 +193,8 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         res.json({ success: false, message: 'No se pudo realizar la compra.' });
     }
 });
+
+
 
 
 
@@ -378,6 +358,71 @@ router.post('/entregado', isLoggedIn, async (req, res) => {
         res.json({ success: false, message: 'No se pudo registrar la entrega.' });
     }
 });
+
+router.get('/cocina', isLoggedIn, async (req, res) => {
+    try {
+        const pedidosResult = await pool.query(`
+            SELECT pc.id_compra, p.nombre, dc.cantidad
+            FROM pedidos_cocina pc
+            JOIN detalle_compra dc ON pc.id_compra = dc.id_compra
+            JOIN producto p ON dc.id_producto = p.id
+            WHERE pc.estado = 'pendiente'
+        `);
+
+        const pedidos = pedidosResult.reduce((acc, pedido) => {
+            if (!acc[pedido.id_compra]) {
+                acc[pedido.id_compra] = { id_compra: pedido.id_compra, productos: [] };
+            }
+            acc[pedido.id_compra].productos.push({ nombre: pedido.nombre, cantidad: pedido.cantidad });
+            return acc;
+        }, {});
+
+        res.render('links/cocina', { pedidos: Object.values(pedidos) });
+    } catch (error) {
+        console.error(error);
+        res.render('links/cocina', { message: 'Error al obtener los pedidos.' });
+    }
+});
+
+router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
+    const { id_compra } = req.body;
+
+    try {
+        // Verificar si hay domiciliarios disponibles
+        const domiciliarioResult = await pool.query(`
+            SELECT id
+            FROM domiciliario
+            WHERE estado = 'Si'
+            ORDER BY horario_disponible ASC
+            LIMIT 1
+        `);
+
+        if (domiciliarioResult.length === 0) {
+            return res.json({ success: false, message: 'Domiciliarios no disponibles por el momento.' });
+        }
+
+        const id_domiciliario = domiciliarioResult[0].id;
+
+        // Marcar el pedido como listo en la cocina
+        await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
+
+        const fechaEnvio = new Date();
+        const fechaEnvioStr = fechaEnvio.toISOString().slice(0, 10);
+        const horaEnvioStr = fechaEnvio.toISOString().slice(11, 19);
+
+        await pool.query('INSERT INTO domicilios (id_compra, id_domiciliario, fecha_envio, hora_envio) VALUES (?, ?, ?, ?)', [id_compra, id_domiciliario, fechaEnvioStr, horaEnvioStr]);
+
+        // Actualizar estado del domiciliario
+        await pool.query('UPDATE domiciliario SET estado = ?, horario_disponible = ? WHERE id = ?', ['No', null, id_domiciliario]);
+
+        res.json({ success: true, message: 'Pedido marcado como listo y domiciliario asignado.' });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, message: 'No se pudo marcar el pedido como listo.' });
+    }
+});
+
+
 
 router.get('/cocina', isLoggedIn, async (req, res)=>{
     res.render('links/cocina')
