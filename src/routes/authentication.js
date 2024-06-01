@@ -75,6 +75,8 @@ router.post('/signin', [
                 return res.redirect('/links');
             } else if (user.roles === 'usuario') {
                 return res.redirect('/links/listUsers');
+            } else if (user.roles === 'cocinero') {
+                return res.redirect('/links/cocina');
             } else if(user.roles === 'domiciliario'){
                 // Obtener el id del domiciliario
                 try {

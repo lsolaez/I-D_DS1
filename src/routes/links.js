@@ -379,6 +379,9 @@ router.post('/entregado', isLoggedIn, async (req, res) => {
     }
 });
 
+router.get('/cocina', isLoggedIn, async (req, res)=>{
+    res.render('links/cocina')
+})
 
 
 
