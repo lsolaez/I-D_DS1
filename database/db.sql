@@ -101,24 +101,6 @@ CREATE TABLE domiciliario (
 );
 
 
--- Tabla 'pedido_domicilio'
-CREATE TABLE pedido_domicilio (
-    id INT PRIMARY KEY,
-    horario_envio TIME,
-    fecha_envio DATE,
-    fecha_fin_servicio DATE,
-    hora_fin_servicio TIME,
-    clave_cliente INT,
-    id_producto INT,
-    id_domiciliario INT,
-    id_direccion_cliente INT,
-    FOREIGN KEY (clave_cliente) REFERENCES cliente(id),
-    FOREIGN KEY (id_producto) REFERENCES producto(id),
-    FOREIGN KEY (id_domiciliario) REFERENCES domiciliario(id),
-    FOREIGN KEY (id_direccion_cliente) REFERENCES direcciones(id)
-);
-
-
 -- Tabla 'decide_recoger_producto'
 CREATE TABLE decide_recoger_producto (
     id INT PRIMARY KEY,
@@ -129,34 +111,6 @@ CREATE TABLE decide_recoger_producto (
     id_producto INT,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id),
     FOREIGN KEY (id_producto) REFERENCES producto(id)
-);
-
--- Tabla 'administrador'
-CREATE TABLE administrador (
-    id INT PRIMARY KEY,
-    id_producto_domicilio INT,
-    id_caja INT,
-    confirmacion_pedido BOOLEAN,
-    id_producto_recogido_cliente INT,
-    finalizacion_pedido BOOLEAN,
-    id_cocina INT,
-    id_domiciliario INT,
-    FOREIGN KEY (id_producto_domicilio) REFERENCES producto(id),
-    FOREIGN KEY (id_caja) REFERENCES caja(id),
-    FOREIGN KEY (id_producto_recogido_cliente) REFERENCES producto(id),
-    FOREIGN KEY (id_cocina) REFERENCES cocina(id),
-    FOREIGN KEY (id_domiciliario) REFERENCES domiciliario(id)
-);
-
--- Tabla 'accesibilidad'
-CREATE TABLE accesibilidad (
-    id INT PRIMARY KEY,
-    id_cliente INT,
-    id_caja INT,
-    id_cocina INT,
-    FOREIGN KEY (id_cliente) REFERENCES cliente(id),
-    FOREIGN KEY (id_caja) REFERENCES caja(id),
-    FOREIGN KEY (id_cocina) REFERENCES cocina(id)
 );
 
 CREATE TABLE domicilios (
