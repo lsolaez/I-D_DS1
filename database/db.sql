@@ -1,25 +1,27 @@
 CREATE DATABASE bakery;
 USE bakery;
 
--- Tabla 'cliente'
-CREATE TABLE cliente (
-    id INT PRIMARY KEY,
-    nombre VARCHAR(50),
-    apellido VARCHAR(50)
-);
-
 -- Tabla 'usuario'
 CREATE TABLE users (
     id INT(11) NOT NULL AUTO_INCREMENT,
     username varchar(50) NOT NULL,
     password varchar(60) NOT NULL,
-    id_cliente INT,
+    id_persona INT,
     cart json,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    unique(username)
 );
 ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'cocinero') DEFAULT 'usuario';
 
 ALTER TABLE users AUTO_INCREMENT = 1; 
+
+CREATE TABLE cliente (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(50),
+    apellido VARCHAR(50),
+    id_usuario INT,
+    FOREIGN KEY (id_usuario) REFERENCES users(id)
+);
 
 -- Tabla 'direcciones'
 CREATE TABLE direcciones (
@@ -82,9 +84,9 @@ CREATE TABLE empleados (
     nombre_completo VARCHAR(250) NOT NULL,
     numero_identificacion VARCHAR(50) PRIMARY KEY,
     telefono VARCHAR(20) NOT NULL,
-    roles VARCHAR(50) NOT NULL
-    username VARCHAR(255)
-    FOREIGN KEY username REFERENCES users(username)
+    roles VARCHAR(50) NOT NULL,
+    username VARCHAR(255),
+    FOREIGN KEY (username) REFERENCES users(username)
 );
 
 -- Tabla 'domiciliario'

@@ -246,6 +246,7 @@ router.post('/empleado', isLoggedIn, async (req, res) => {
     const newUser={
         username,
         password: encryptedPassword,
+        id_persona: id,
         roles
     };
     await pool.query('INSERT INTO users SET ?', [newUser]);
@@ -253,7 +254,8 @@ router.post('/empleado', isLoggedIn, async (req, res) => {
         nombre_completo,
         numero_identificacion: id,
         telefono,
-        roles
+        roles,
+        username
     };
     await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
     if(roles==='domiciliario'){
