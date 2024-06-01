@@ -75,6 +75,22 @@ router.post('/signin', [
                 return res.redirect('/links');
             } else if (user.roles === 'usuario') {
                 return res.redirect('/links/listUsers');
+            } else if(user.roles === 'domiciliario'){
+                // Obtener el id del domiciliario
+                try {
+                    const domiciliarioResult = await pool.query('SELECT id FROM domiciliario WHERE numero_identificacion = (SELECT numero_identificacion FROM empleados WHERE username = ?)', [user.username]);
+                    console.log('Domiciliario Result:', domiciliarioResult); // Agregar este log
+                    if (domiciliarioResult.length === 0) {
+                        const script = `Swal.fire('Error', 'No se encontró un domiciliario para este usuario.', 'error');`;
+                        return res.render('auth/signin', { script });
+                    }
+                    const id_domiciliario = domiciliarioResult[0].id;
+                    return res.redirect(`/links/domiciliario/${id_domiciliario}`);
+                } catch (err) {
+                    console.error(err);
+                    const script = `Swal.fire('Error', 'No se pudo obtener el id del domiciliario.', 'error');`;
+                    return res.render('auth/signin', { script });
+                }
             } else {
                 return res.redirect('/profile');
             }

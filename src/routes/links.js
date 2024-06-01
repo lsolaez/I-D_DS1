@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../database');
 const { isLoggedIn } = require('../lib/auth');
+const helpers = require('../lib/helpers');
+const moment = require('moment-timezone');
 
 router.get('/add', isLoggedIn, (req, res) => {
     res.render('links/add', { script: '' });
@@ -181,6 +183,31 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
             await pool.query('INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', [id_compra, item.id, item.cantidad, item.precio]);
         }
 
+        if (deliveryOption === 'domicilio') {
+            // Buscar domiciliario disponible estilo FIFO
+            const domiciliarioResult = await pool.query(`
+                SELECT id
+                FROM domiciliario
+                WHERE estado = 'Si'
+                ORDER BY horario_disponible ASC
+                LIMIT 1
+            `);
+            
+            if (domiciliarioResult.length > 0) {
+                const id_domiciliario = domiciliarioResult[0].id;
+                const fechaEnvio = new Date(fechaCompra.getTime() + 5 * 60000); // 5 minutos después de la compra
+                const fechaEnvioStr = fechaEnvio.toISOString().slice(0, 10);
+                const horaEnvioStr = fechaEnvio.toISOString().slice(11, 19);
+
+                await pool.query('INSERT INTO domicilios (id_compra, id_domiciliario, fecha_envio, hora_envio) VALUES (?, ?, ?, ?)', [id_compra, id_domiciliario, fechaEnvioStr, horaEnvioStr]);
+
+                // Actualizar estado del domiciliario
+                await pool.query('UPDATE domiciliario SET estado = ?, horario_disponible = ? WHERE id = ?', ['No', null, id_domiciliario]);
+            } else {
+                return res.json({ success: false, message: 'No hay domiciliarios disponibles.' });
+            }
+        }
+
         req.session.cart = []; // Vaciar el carrito después de la compra
         res.json({ success: true, message: 'Compra realizada con éxito.', roles: user.roles });
     } catch (error) {
@@ -188,6 +215,8 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         res.json({ success: false, message: 'No se pudo realizar la compra.' });
     }
 });
+
+
 
 router.get('/empleado', isLoggedIn, (req, res) => {
     res.render('links/empleados', { script: '' });
@@ -240,5 +269,115 @@ router.post('/empleado', isLoggedIn, async (req, res) => {
     const script = `Swal.fire('Éxito', 'Empleado guardado exitosamente.', 'success');`;
     res.render('links/empleados', { script });
 });
+
+router.get('/domiciliario', isLoggedIn, async (req, res) => {
+    res.render('links/domiciliario');
+});
+
+// Ruta para mostrar los detalles de la compra asignada al domiciliario
+router.get('/domiciliario/:id', isLoggedIn, async (req, res) => {
+    const { id: id_domiciliario } = req.params;
+    try {
+        // Obtener el id_compra desde la tabla domicilios
+        const compraResult = await pool.query(`
+            SELECT id_compra, id as id_domicilio 
+            FROM domicilios
+            WHERE id_domiciliario = ? AND fecha_entrega IS NULL
+        `, [id_domiciliario]);
+
+        console.log('Compra Result:', compraResult); // Agregar este log
+
+        if (compraResult.length === 0) {
+            return res.render('links/domiciliario', { message: 'No tienes asignaciones pendientes.' });
+        }
+
+        const id_compra = compraResult[0].id_compra;
+        const id_domicilio = compraResult[0].id_domicilio;
+
+        // Obtener información de los productos que debe llevar el domiciliario
+        const productosResult = await pool.query(`
+            SELECT producto.id, producto.nombre, detalle_compra.cantidad, producto.urlimagen, ? as id_domicilio, ? as id_domiciliario
+            FROM domicilios
+            JOIN domiciliario ON domicilios.id_domiciliario = domiciliario.id
+            JOIN empleados ON empleados.numero_identificacion = domiciliario.numero_identificacion
+            JOIN users ON empleados.username = users.username
+            JOIN compras ON compras.id = domicilios.id_compra
+            JOIN detalle_compra ON compras.id = detalle_compra.id_compra
+            JOIN producto ON detalle_compra.id_producto = producto.id
+            WHERE domiciliario.id = ? AND domicilios.fecha_entrega IS NULL
+        `, [id_domicilio, id_domiciliario, id_domiciliario]);
+
+        console.log('Productos Result:', productosResult); // Agregar este log
+
+        if (productosResult.length === 0) {
+            return res.render('links/domiciliario', { message: 'No tienes asignaciones pendientes.' });
+        }
+
+        // Obtener la dirección de entrega usando id_compra
+        const direccionResult = await pool.query(`
+            SELECT direcciones.direccionCliente 
+            FROM compras
+            JOIN cliente ON cliente.id = compras.id_cliente
+            JOIN direcciones ON cliente.id = direcciones.id_cliente
+            JOIN domicilios ON domicilios.id_compra = compras.id
+            WHERE compras.id = ? AND domicilios.fecha_entrega IS NULL
+        `, [id_compra]);
+
+        console.log('Dirección Result:', direccionResult); // Agregar este log
+
+        if (direccionResult.length === 0) {
+            return res.render('links/domiciliario', { message: 'No se pudo encontrar la dirección de entrega.' });
+        }
+
+        const direccion = direccionResult[0].direccionCliente;
+
+        res.render('links/domiciliario', {
+            productos: productosResult,
+            direccion,
+            id_domicilio,
+            id_domiciliario
+        });
+    } catch (error) {
+        console.error(error);
+        res.render('links/domiciliario', { message: 'Error al obtener los detalles de la compra.' });
+    }
+});
+
+
+router.post('/entregado', isLoggedIn, async (req, res) => {
+    const { id_domicilio, id_domiciliario } = req.body;
+
+    // Ajustar la fecha y hora a tu zona horaria local
+    const fechaEntrega = moment().tz('America/Bogota'); // Cambia 'America/Bogota' a tu zona horaria local
+    const fechaEntregaStr = fechaEntrega.format('YYYY-MM-DD');
+    const horaEntregaStr = fechaEntrega.format('HH:mm:ss');
+
+    console.log('Fecha de Entrega:', fechaEntregaStr);
+    console.log('Hora de Entrega:', horaEntregaStr);
+
+    try {
+        // Actualizar la fecha y hora de entrega en la tabla domicilios
+        await pool.query(`
+            UPDATE domicilios
+            SET fecha_entrega = ?, hora_entrega = ?
+            WHERE id = ?
+        `, [fechaEntregaStr, horaEntregaStr, id_domicilio]);
+
+        // Actualizar el horario disponible y estado en la tabla domiciliario
+        await pool.query(`
+            UPDATE domiciliario
+            SET horario_disponible = ?, estado = 'Si'
+            WHERE id = ?
+        `, [fechaEntregaStr + ' ' + horaEntregaStr, id_domiciliario]);
+
+        res.json({ success: true, message: 'Entrega registrada correctamente.' });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, message: 'No se pudo registrar la entrega.' });
+    }
+});
+
+
+
 
 module.exports = router;

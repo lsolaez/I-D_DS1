@@ -83,8 +83,9 @@ CREATE TABLE empleados (
     numero_identificacion VARCHAR(50) PRIMARY KEY,
     telefono VARCHAR(20) NOT NULL,
     roles VARCHAR(50) NOT NULL
+    username VARCHAR(255)
+    FOREIGN KEY username REFERENCES users(username)
 );
-
 
 -- Tabla 'domiciliario'
 CREATE TABLE domiciliario (
@@ -94,8 +95,10 @@ CREATE TABLE domiciliario (
     horario_disponible DATETIME default CURRENT_TIMESTAMP,
     licencia_conduccion INT,
     fecha_fin_licencia DATE,
+    estado VARCHAR(2) default 'Si',
     FOREIGN KEY (numero_identificacion) REFERENCES empleados(numero_identificacion)
 );
+
 
 -- Tabla 'pedido_domicilio'
 CREATE TABLE pedido_domicilio (
@@ -154,3 +157,17 @@ CREATE TABLE accesibilidad (
     FOREIGN KEY (id_caja) REFERENCES caja(id),
     FOREIGN KEY (id_cocina) REFERENCES cocina(id)
 );
+
+CREATE TABLE domicilios (
+    id int PRIMARY KEY AUTO_INCREMENT,
+    id_compra int,
+    id_domiciliario int,
+    fecha_envio DATE,
+    hora_envio TIME,
+    fecha_entrega DATE,
+    hora_entrega TIME,
+    FOREIGN KEY (id_compra) REFERENCES compras(id),
+    FOREIGN KEY (id_domiciliario) REFERENCES domiciliario(id)
+);
+ALTER TABLE domicilios  AUTO_INCREMENT = 1;
+

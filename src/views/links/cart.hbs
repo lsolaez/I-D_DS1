@@ -87,7 +87,7 @@
       <div class="rectangle rectangle-left">
         {{#each cart}}
           <div class="product">
-            <img class="product-img" src="{{this.imagen}}" alt="{{this.nombre}}">
+            <img class="product-img" src="{{this.urlimagen}}" alt="{{this.nombre}}">
             <div class="product-details">
               <p>{{this.nombre}}</p>
               <p>{{this.descripcion}}</p>
@@ -259,7 +259,10 @@
           return;
         }
       }
-
+      if (!deliveryOption) {
+        Swal.fire('Error!', 'Por favor seleccione una opción de entrega.', 'error');
+        return;
+      }
       Swal.fire({
         title: '¿Estás seguro?',
         text: "¿Deseas finalizar la compra?",
