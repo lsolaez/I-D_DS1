@@ -1,5 +1,13 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del domicilio</title>
+    <!-- Incluir Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-DmIc+FZKVRa9b8/WlU7BiGeQ9FHg9pTJWcl6RGfFU6fZU/zeIM4EycLc2Cp1jgJNUOtMbg80ZrJ7efP0V/gLyQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         /* Reiniciar márgenes y padding en body y html */
         body, html {
@@ -9,8 +17,111 @@
             width: 100%;
             background-color: #f5f5f5;
         }
-    </style>
+       .container-custom {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-body img {
+            border-radius: 50%;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+        .product-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .product-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .product-list li i {
+            margin-right: 10px;
+        }
+        .product-item {
+            font-weight: bold;
+            color: #333;
+        }
+        .product-quantity {
+            font-size: 0.9em;
+            color: #777;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+        .cart {
+            max-width: 1000px;
+            margin: auto;
+        }
+        .cart .card {
+            margin-bottom: 20px;
 
+        }
+        .container-custom .card {
+    border: 1px solid #dee2e6; /* Añade un borde sutil */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+.container-custom .card {
+            border: 1px solid #dee2e6; /* Añade un borde sutil */
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .container-custom .card:hover {
+            transform: translateY(-5px);
+        }
+        .container-custom .card-body {
+            padding: 20px; /* Aumenta el padding para un aspecto más espaciado */
+        }
+        .container-custom .card-title {
+            font-size: 1.2em; /* Aumenta el tamaño del título */
+            margin-bottom: 10px; /* Añade margen inferior al título */
+            color: #333; /* Cambia el color del título */
+        }
+        .container-custom .card-text {
+            font-size: 1em; /* Tamaño de fuente para el texto */
+            color: #555; /* Color de texto más oscuro */
+        }
+        .container-custom .btn-success {
+            width: 100%; /* Haz que el botón ocupe todo el ancho del contenedor */
+            margin-top: 10px; /* Añade margen superior al botón */
+        }
+    </style>
+</head>
 <body>
        <div class="container-custom p-4">
         <h1>Detalles del domicilio</h1>
