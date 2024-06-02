@@ -1,120 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta tu Pedido</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <br>
+    <title>Consultar Pedido</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        .timeline {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin: 20px 0;
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
         }
-        .timeline .step {
+
+        .pedido-container {
             display: flex;
             flex-direction: column;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .estado-container {
+            display: flex;
             align-items: center;
-            width: 100%;
+            margin-top: 20px;
             position: relative;
         }
-        .timeline .step::after {
-            content: '';
-            width: 100%;
+
+        .estado {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        .estado-label {
+            position: absolute;
+            top: 40px;
+            text-align: center;
+            width: 100px;
+        }
+
+        .rojo {
+            background-color: red;
+        }
+
+        .verde {
+            background-color: green;
+        }
+
+        .linea {
             height: 4px;
-            background: #8B4513;
             position: absolute;
             top: 50%;
             left: 0;
-            z-index: -1;
+            z-index: 1;
+            background-color: #ccc;
         }
-        .timeline .step:first-child::after {
-            left: 50%;
+
+        .linea.verde {
+            background-color: green;
         }
-        .timeline .step:last-child::after {
-            width: 50%;
+
+        .linea.recibido {
+            width: 12.5%;
         }
-        .timeline .step .circle {
-            width: 30px;
-            height: 30px;
-            background: #8B4513;
-            border-radius: 50%;
+
+        .linea.preparado {
+            width: 37.5%;
+        }
+
+        .linea.enviado {
+            width: 62.5%;
+        }
+
+        .linea.entregado {
+            width: 82%;
+        }
+
+        .productos-container {
+            margin-top: 20px;
+        }
+
+        .producto {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
+            justify-content: space-between;
             margin-bottom: 10px;
         }
-        .timeline .step .label {
-            text-align: center;
-        }
-        .timeline .step.active .circle {
-            background: #28a745;
-        }
-        .timeline .step.active .label {
-            color: #28a745;
-        }
-        .timeline .step.inactive .circle {
-            background: #dc3545;
-        }
-        .timeline .step.inactive .label {
-            color: #dc3545;
+
+        .pedidos-scroll {
+            max-height: 600px;
+            /* Ajusta esto según tu preferencia */
+            overflow-y: auto;
         }
     </style>
 </head>
+
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Consulta tu Pedido</h1>
-        {{#if pedidos.length}}
-            {{#each pedidos}}
-                <div class="pedido mb-5">
-                    <h3>Pedido ID: {{this.id}}</h3>
-                    <div class="timeline">
-                        <div class="step active">
-                            <div class="circle">1</div>
-                            <div class="label">Compra Realizada<br>{{this.fecha_compra}}<br>{{this.hora_compra}}</div>
-                        </div>
-                        <div class="step active">
-                            <div class="circle">2</div>
-                            <div class="label">
-                                {{#if this.estado_enviado}}
-                                    Pedido Preparado
-                                {{else}}
-                                    {{#if this.estado_preparado}}
-                                        Pedido Preparado
-                                    {{else}}
-                                        En preparación...
-                                    {{/if}}
-                                {{/if}}
-                            </div>
-                        </div>
-                        <div class="step {{#if this.estado_enviado}}active{{else}}inactive{{/if}}">
-                            <div class="circle">3</div>
-                            <div class="label">{{#if this.estado_enviado}}Pedido Enviado{{else}}En espera de envío...{{/if}}</div>
-                        </div>
-                        <div class="step {{#if this.estado_entregado}}active{{else}}inactive{{/if}}">
-                            <div class="circle">4</div>
-                            <div class="label">{{#if this.estado_entregado}}Pedido Entregado{{else}}En espera de entrega...{{/if}}</div>
-                        </div>
-                    </div>
-                    <h4>Productos</h4>
-                    <ul>
-                        {{#each this.productos}}
-                            <li>{{this.nombre}} - Cantidad: {{this.cantidad}}</li>
-                        {{/each}}
-                    </ul>
+    <h1>Estado de tus pedidos</h1>
+
+    {{#if pedidos.length}}
+    <div class="pedidos-scroll" style="padding: 80px;">
+        {{#each pedidos}}
+        <div class="pedido-container">
+            <h2>Pedido ID: {{this.id}}</h2>
+            <p>Fecha de Compra: {{this.fecha_compra}}</p>
+            <p>Hora de Compra: {{this.hora_compra}}</p>
+            <p>Total: {{this.total}}</p>
+            <div class="estado-container">
+                <div
+                    class="linea {{#if this.estado_entregado}}entregado verde{{else if this.estado_enviado}}enviado verde{{else if this.estado_preparado}}preparado verde{{else}}recibido verde{{/if}}">
                 </div>
-                <hr>
-            {{/each}}
-        {{else}}
-            <p>No tienes pedidos en proceso.</p>
-        {{/if}}
+                <div class="estado {{#if this.estado_recibido}}verde{{else}}verde{{/if}}" style="left: 0;">1</div>
+                <div class="estado-label" style="left: 0%;">Recibido por tienda</div>
+                <div class="estado {{#if this.estado_preparado}}verde{{else}}rojo{{/if}}" style="left: 25%;">2</div>
+                <div class="estado-label" style="left: 24.5%;">Preparado</div>
+                <div class="estado {{#if this.estado_enviado}}verde{{else}}rojo{{/if}}" style="left: 50%;">3</div>
+                <div class="estado-label" style="left: 52%;">Enviado</div>
+                <div class="estado {{#if this.estado_entregado}}verde{{else}}rojo{{/if}}" style="left: 75%;">4</div>
+                <div class="estado-label" style="left: 79%;">Entregado</div>
+            </div>
+            <div class="productos-container">
+                <br>
+                <h3>Productos:</h3>
+                {{#each this.productos}}
+                <div class="producto">
+                    <span>{{this.nombre}}</span>
+                    <span>Cantidad: {{this.cantidad}}</span>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/each}}
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {{else}}
+    <p>No tienes pedidos recientes.</p>
+    {{/if}}
 </body>
+
 </html>

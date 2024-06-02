@@ -171,9 +171,9 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         }
 
         const total = req.session.cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
-        const fechaCompra = new Date();
-        const fechaCompraStr = fechaCompra.toISOString().slice(0, 10);
-        const horaCompraStr = fechaCompra.toISOString().slice(11, 19);
+        const fechaCompra = moment().tz('America/Bogota');
+        const fechaCompraStr = fechaCompra.format('YYYY-MM-DD');
+        const horaCompraStr = fechaCompra.format('HH:mm:ss');
 
         const result = await pool.query('INSERT INTO compras (id_cliente, fecha_compra, hora_compra, total) VALUES (?, ?, ?, ?)', [id_usuario, fechaCompraStr, horaCompraStr, total]);
 
@@ -184,7 +184,7 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         }
 
         // Marcar el pedido como pendiente en la cocina
-        await pool.query('INSERT INTO pedidos_cocina (id_compra, estado) VALUES (?, ?)', [id_compra, 'pendiente']);
+        await pool.query('INSERT INTO pedidos_cocina (id_compra, estado) VALUES (?, ?)', [id_compra, 'recibido']);
 
         req.session.cart = []; // Vaciar el carrito después de la compra
         res.json({ success: true, message: 'Compra realizada con éxito.', roles: user.roles });
@@ -223,14 +223,14 @@ router.post('/empleado', isLoggedIn, async (req, res) => {
     }
 
     const encryptedPassword = await helpers.encryptPassword(password)
-    const newUser={
+    const newUser = {
         username,
         password: encryptedPassword,
         id_persona: id,
         roles
     };
     await pool.query('INSERT INTO users SET ?', [newUser]);
-    const newEmployee ={
+    const newEmployee = {
         nombre_completo,
         numero_identificacion: id,
         telefono,
@@ -238,7 +238,7 @@ router.post('/empleado', isLoggedIn, async (req, res) => {
         username
     };
     await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
-    if(roles==='domiciliario'){
+    if (roles === 'domiciliario') {
         const newDomiciliario = {
             numero_identificacion: id,
             medio_transporte: roles === 'domiciliario' ? tipo_vehiculo : null,
@@ -424,7 +424,7 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
 
 
 
-router.get('/cocina', isLoggedIn, async (req, res)=>{
+router.get('/cocina', isLoggedIn, async (req, res) => {
     res.render('links/cocina')
 })
 
@@ -437,7 +437,7 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
         // Obtener todas las compras del cliente
         const comprasResult = await pool.query(`
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
-                   pedidos_cocina.estado as estado_cocina, domicilios.fecha_envio, domicilios.fecha_entrega
+            pedidos_cocina.estado as estado_cocina, domicilios.fecha_envio, domicilios.fecha_entrega
             FROM compras
             LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
             LEFT JOIN domicilios ON compras.id = domicilios.id_compra
@@ -450,16 +450,28 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
         }
 
         const pedidos = await Promise.all(comprasResult.map(async compra => {
+            let estado_recibido = false;
             let estado_preparado = false;
             let estado_enviado = false;
             let estado_entregado = false;
 
+            if (compra.estado_cocina === 'recibido' || compra.estado_cocina === 'listo') {
+                estado_recibido = true;
+            }
+
+            if (compra.estado_cocina === 'listo') {
+                estado_preparado = true;
+            }
+
             if (compra.fecha_entrega) {
                 estado_entregado = true;
+                estado_enviado = true;
+                estado_preparado = true;
+                estado_recibido = true;
             } else if (compra.fecha_envio) {
                 estado_enviado = true;
-            } else if (compra.estado_cocina === 'listo') {
                 estado_preparado = true;
+                estado_recibido = true;
             }
 
             // Obtener los productos de la compra
@@ -472,6 +484,7 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
 
             return {
                 id: compra.id,
+                estado_recibido,
                 estado_preparado,
                 estado_enviado,
                 estado_entregado,
@@ -488,6 +501,9 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
         res.render('links/consultarPedido', { pedidos: [], message: 'Error al obtener el estado de los pedidos.' });
     }
 });
+
+
+
 
 
 module.exports = router;

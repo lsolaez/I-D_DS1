@@ -57,4 +57,95 @@ font-family: 'Oswald', sans-serif;
     overflow-y: auto;
 }
 
-  
+/* Path: src/public/css/style.css */
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.pedidos-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.pedido-container {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.productos-container h3 {
+  margin: 10px 0 10px; /* Ajusta el margen inferior para separar del siguiente contenido */
+}
+
+.producto span {
+  flex: 1;
+}
+
+.estado-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px; /* Ajusta el margen superior */
+  position: relative;
+}
+
+.estado {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+  position: relative;
+  z-index: 2;
+}
+
+.estado-label {
+  position: absolute;
+  top: 40px;
+  text-align: center;
+  width: 100px;
+}
+
+.rojo {
+  background-color: red;
+}
+
+.verde {
+  background-color: green;
+}
+
+.linea {
+  height: 4px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 1;
+  background-color: #ccc;
+}
+
+.linea.verde {
+  background-color: green;
+}
+
+.linea.recibido {
+  width: 12.5%;
+}
+
+.linea.preparado {
+  width: 37.5%;
+}
+
+.linea.enviado {
+  width: 62.5%;
+}
+
+.linea.entregado {
+  width: 82%;
+}
+
+.pedidos-scroll {
+  max-height: 600px; /* Ajusta esto según tu preferencia */
+  overflow-y: auto;
+}
