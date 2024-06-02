@@ -4,28 +4,43 @@
         <div class="card-body">
             <form action="/links/edit/{{productos.id}}" method="POST">
                 <div class="form-group">
-                        <div class="form-group">
-                            <input type="text" value="{{productos.urlimagen}}" name="imagen" class="form-control" placeholder="URL imagen">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" value="{{productos.nombre}}" name="nombre" class="form-control" placeholder="nombre del producto">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" value="{{productos.descripcion}}" name="descripcion" class="form-control" placeholder="Descripcion">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" value="{{productos.precio}}" name="precio" class="form-control" placeholder="Precio">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" value="{{productos.categoria}}" name="categoria" class="form-control" placeholder="Categoria">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" value="{{productos.confirmaciondedisponibilidad}}" name="disponible" class="form-control" placeholder="Disponible">
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-success btn-block">Save</button>
-                </div>
+                    <div class="form-group">
+                        <input type="text" value="{{productos.urlimagen}}" name="imagen" class="form-control"
+                            placeholder="URL imagen">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input type="text" value="{{productos.nombre}}" name="nombre" class="form-control"
+                            placeholder="nombre del producto">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input type="text" value="{{productos.descripcion}}" name="descripcion" class="form-control"
+                            placeholder="Descripcion">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input type="number" value="{{productos.precio}}" name="precio" class="form-control"
+                            placeholder="Precio">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input type="text" value="{{productos.categoria}}" name="categoria" class="form-control"
+                            placeholder="Categoria">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input type="text" value="{{productos.confirmaciondedisponibilidad}}" name="disponible"
+                            class="form-control" placeholder="Disponible">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <button class="btn btn-success btn-block">Save</button>
+                    </div>
             </form>
         </div>
     </div>
+</div>
+<div style="position: fixed; bottom: 20px; left: 20px;">
+    <a href="/links/" class="btn btn-primary">Volver</a>
 </div>

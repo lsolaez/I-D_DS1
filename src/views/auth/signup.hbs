@@ -1,40 +1,63 @@
+<style>
+  .card-header { background-color: #28a745; color: white; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+</style>
+</head>
+<body>
+
 <div class="container p-4">
-
-  <div class="row">
-
-    <div class="col-md-4 mx-auto">
-
-      <div class="card text-center">
-
-        <div class="card-header">
-          <h3>SignUp</h3>
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h3>SingUp</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/signup" method="POST">
+                        <div class="form-group">
+                            <input type="text" name="username" placeholder="Nombre de usuario" class="form-control" autofocus>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input type="password" name="password" placeholder="Contraseña" class="form-control">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input type="text" name="id_cliente" placeholder="Identificación" class="form-control">
+                        </div>
+                        <br>
+                        <div class="form-group d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-block">Registrarse</button>
+                        </div>
+                        <br>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="card-body">
-
-          <form action="/signup" method="POST">
-            <div class="form-group">
-              <input type="text" name="username" placeholder="Username" class="form-control"  autofocus>
-            </div>
-            <br>
-            <div class="form-group">
-              <input type="password" name="password" placeholder="Password" class="form-control">
-            </div>
-            <br>
-            <div class="form-group">
-              <input type="text" name="id_cliente" placeholder="identificacion" class="form-control">
-            </div>
-            <br>
-            <div class="form-group d-grid gap-2">
-              <button class="btn btn-success btn-block">
-                SingUp
-              </button>
-            </div>
-
-          </form>
-
-        </div>
-      </div>
     </div>
-  </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+const images = ['pan.png', 'pan2.png', 'pan3.png', 'pan4.png']; // Añade aquí los nombres de todas tus imágenes
+
+function createBread() {
+    var img = document.createElement('img');
+    var randomImage = images[Math.floor(Math.random() * images.length)]; // Selecciona una imagen aleatoria del arreglo
+    img.src = `/img/${randomImage}`; // Usa la imagen aleatoria
+    img.style.width = "50px";
+    img.style.left = Math.random() * window.innerWidth + 'px';
+    img.className = 'falling-bread';
+    img.style.animationDuration = Math.random() * 3 + 2 + 's'; // Duración entre 2 y 5 segundos
+    document.body.appendChild(img);
+
+    setTimeout(() => {
+        document.body.removeChild(img);
+    }, 5000); // Remueve la imagen después de que la animación termina
+}
+
+setInterval(createBread, 300); // Crea un nuevo "pan" cada 300 ms
+</script>
+</body>
+</html>
