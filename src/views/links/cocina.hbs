@@ -5,30 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos en Cocina</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .card {
+            margin: 10px;
+            min-width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 1.2em;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 1.3em;
+            color: #343a40;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .product-list {
+            padding-left: 0;
+            list-style: none;
+        }
+        .product-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .product-list li i {
+            margin-right: 10px;
+        }
+        .product-item {
+            font-weight: bold;
+            color: #333;
+        }
+        .product-quantity {
+            font-size: 0.9em;
+            color: #777;
+        }
+        
+    </style>
 </head>
+
 <body>
     <div class="container p-4">
         <h1>Pedidos en Cocina</h1>
-        {{#if pedidos.length}}
-            {{#each pedidos}}
-                <div class="card my-3">
-                    <div class="card-header">
-                        Pedido ID: {{this.id_compra}}
+        <div class="row">
+            {{#if pedidos.length}}
+                {{#each pedidos}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-receipt"></i> Pedido ID: {{this.id_compra}}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-box-open"></i> Productos</h5>
+                                <ul class="product-list">
+                                    {{#each this.productos}}
+                                        <li>
+                                            <i class="fas fa-utensils"></i>
+                                            <span class="product-item">{{this.nombre}}</span> - 
+                                            <span class="product-quantity">Cantidad: {{this.cantidad}}</span>
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                                <button class="btn btn-success btn-block marcar-listo" data-id="{{this.id_compra}}"><i class="fas fa-check"></i> Pedido Listo</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Productos</h5>
-                        <ul>
-                            {{#each this.productos}}
-                                <li>{{this.nombre}} - Cantidad: {{this.cantidad}}</li>
-                            {{/each}}
-                        </ul>
-                        <button class="btn btn-success marcar-listo" data-id="{{this.id_compra}}">Pedido Listo</button>
-                    </div>
-                </div>
-            {{/each}}
-        {{else}}
-            <p>No hay pedidos pendientes.</p>
-        {{/if}}
+                {{/each}}
+            {{else}}
+                <p>No hay pedidos pendientes.</p>
+            {{/if}}
+        </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
