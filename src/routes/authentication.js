@@ -100,8 +100,15 @@ router.post('/signin', [
     })(req, res, next);
 });
 
+// Añadir el rol del usuario al contexto de la vista
 router.get('/profile', isLoggedIn, (req, res) => {
-    res.render('profile');
+    res.render('profile', { user: req.user });
+});
+
+// Asegurarte de que el rol esté disponible en el contexto
+router.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
 });
 
 router.get('/logout', async (req, res) => {
@@ -110,7 +117,8 @@ router.get('/logout', async (req, res) => {
         await pool.query('UPDATE users SET cart = ? WHERE id = ?', [cart, req.user.id]);
     }
     req.logOut(() => {});
-    res.redirect('signin');
+    res.render('links/logout');
 });
+
 
 module.exports = router;

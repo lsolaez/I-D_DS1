@@ -32,4 +32,12 @@ Handlebars.registerHelper('total', (cart) => {
   return total.toFixed(2);
 });
 
+// Helper para verificar el rol del usuario
+Handlebars.registerHelper('isRole', function(user, role, options) {
+  if (user && user.roles && user.roles === role) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+});
+
 module.exports = Handlebars;

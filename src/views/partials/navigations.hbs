@@ -7,27 +7,47 @@
     <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
       <ul class="navbar-nav ml-auto ">
         {{#if user}}
-        <li class="nav-item">
-          <a href="/links" class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Consulta tu pedido</a>
-        </li>
-        <li class="nav-item">
-          <a href="/links/cart" class="nav-link">
-            <i class="fas fa-shopping-cart"></i>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="/logout" class="nav-link">Logout</a>
-        </li>
+          {{#isRole user "admin"}}
+          <li class="nav-item">
+            <a href="/links" class="nav-link active" aria-current="page">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin">Admin Panel</a>
+          </li>
+          {{/isRole}}
+          {{#isRole user "usuario"}}
+          <li class="nav-item">
+            <a href="/links/listUsers" class="nav-link active" aria-current="page">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/links/consulta-pedido">Consulta tu pedido</a>
+          </li>
+          <li class="nav-item">
+            <a href="/links/cart" class="nav-link">
+              <i class="fas fa-shopping-cart"></i>
+            </a>
+          </li>
+          {{/isRole}}
+          {{#isRole user "cocinero"}}
+          <li class="nav-item">
+            <a href="/links/cocina" class="nav-link active" aria-current="page">Cocina</a>
+          </li>
+          {{/isRole}}
+          {{#isRole user "domiciliario"}}
+          <li class="nav-item">
+            <a href="/links/domiciliario/{{user.id}}" class="nav-link active" aria-current="page">Domicilios</a>
+          </li>
+          {{/isRole}}
+          <li class="nav-item">
+            <a href="/logout" class="nav-link">Logout</a>
+          </li>
         {{else}}
-         <li class="nav-item">
-          <a class="nav-link" href="/signin">SignIn</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/signup">SignUp</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signin">SignIn</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">SignUp</a>
+          </li>
         {{/if}}
       </ul>
     </div>

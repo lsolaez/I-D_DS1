@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta tu Pedido</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .timeline {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .timeline .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+        .timeline .step::after {
+            content: '';
+            width: 100%;
+            height: 4px;
+            background: #8B4513;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            z-index: -1;
+        }
+        .timeline .step:first-child::after {
+            left: 50%;
+        }
+        .timeline .step:last-child::after {
+            width: 50%;
+        }
+        .timeline .step .circle {
+            width: 30px;
+            height: 30px;
+            background: #8B4513;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .timeline .step .label {
+            text-align: center;
+        }
+        .timeline .step.active .circle {
+            background: #28a745;
+        }
+        .timeline .step.active .label {
+            color: #28a745;
+        }
+        .timeline .step.inactive .circle {
+            background: #dc3545;
+        }
+        .timeline .step.inactive .label {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Consulta tu Pedido</h1>
+        {{#if pedidos.length}}
+            {{#each pedidos}}
+                <div class="pedido mb-5">
+                    <h3>Pedido ID: {{this.id}}</h3>
+                    <div class="timeline">
+                        <div class="step active">
+                            <div class="circle">1</div>
+                            <div class="label">Compra Realizada<br>{{this.fecha_compra}}<br>{{this.hora_compra}}</div>
+                        </div>
+                        <div class="step active">
+                            <div class="circle">2</div>
+                            <div class="label">
+                                {{#if this.estado_enviado}}
+                                    Pedido Preparado
+                                {{else}}
+                                    {{#if this.estado_preparado}}
+                                        Pedido Preparado
+                                    {{else}}
+                                        En preparación...
+                                    {{/if}}
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="step {{#if this.estado_enviado}}active{{else}}inactive{{/if}}">
+                            <div class="circle">3</div>
+                            <div class="label">{{#if this.estado_enviado}}Pedido Enviado{{else}}En espera de envío...{{/if}}</div>
+                        </div>
+                        <div class="step {{#if this.estado_entregado}}active{{else}}inactive{{/if}}">
+                            <div class="circle">4</div>
+                            <div class="label">{{#if this.estado_entregado}}Pedido Entregado{{else}}En espera de entrega...{{/if}}</div>
+                        </div>
+                    </div>
+                    <h4>Productos</h4>
+                    <ul>
+                        {{#each this.productos}}
+                            <li>{{this.nombre}} - Cantidad: {{this.cantidad}}</li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <hr>
+            {{/each}}
+        {{else}}
+            <p>No tienes pedidos en proceso.</p>
+        {{/if}}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

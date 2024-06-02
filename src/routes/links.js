@@ -429,5 +429,65 @@ router.get('/cocina', isLoggedIn, async (req, res)=>{
 })
 
 
+// Ruta para consultar el estado de los pedidos
+router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
+    try {
+        const id_cliente = req.user.id;
+
+        // Obtener todas las compras del cliente
+        const comprasResult = await pool.query(`
+            SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
+                   pedidos_cocina.estado as estado_cocina, domicilios.fecha_envio, domicilios.fecha_entrega
+            FROM compras
+            LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
+            LEFT JOIN domicilios ON compras.id = domicilios.id_compra
+            WHERE compras.id_cliente = ?
+            ORDER BY compras.fecha_compra DESC, compras.hora_compra DESC
+        `, [id_cliente]);
+
+        if (comprasResult.length === 0) {
+            return res.render('links/consultarPedido', { pedidos: [] });
+        }
+
+        const pedidos = await Promise.all(comprasResult.map(async compra => {
+            let estado_preparado = false;
+            let estado_enviado = false;
+            let estado_entregado = false;
+
+            if (compra.fecha_entrega) {
+                estado_entregado = true;
+            } else if (compra.fecha_envio) {
+                estado_enviado = true;
+            } else if (compra.estado_cocina === 'listo') {
+                estado_preparado = true;
+            }
+
+            // Obtener los productos de la compra
+            const productosResult = await pool.query(`
+                SELECT producto.nombre, detalle_compra.cantidad
+                FROM detalle_compra
+                JOIN producto ON detalle_compra.id_producto = producto.id
+                WHERE detalle_compra.id_compra = ?
+            `, [compra.id]);
+
+            return {
+                id: compra.id,
+                estado_preparado,
+                estado_enviado,
+                estado_entregado,
+                fecha_compra: compra.fecha_compra,
+                hora_compra: compra.hora_compra,
+                total: compra.total,
+                productos: productosResult
+            };
+        }));
+
+        res.render('links/consultarPedido', { pedidos });
+    } catch (error) {
+        console.error(error);
+        res.render('links/consultarPedido', { pedidos: [], message: 'Error al obtener el estado de los pedidos.' });
+    }
+});
+
 
 module.exports = router;
