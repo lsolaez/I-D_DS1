@@ -49,14 +49,6 @@ CREATE TABLE caja (
     detalle_tarifa VARCHAR(100),
     pago_pedido DECIMAL(10,2)
 );
--- Tabla 'cocina'
-CREATE TABLE pedidos_cocina (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    id_compra INT NOT NULL,
-    estado VARCHAR(50) DEFAULT 'pendiente',
-    FOREIGN KEY (id_compra) REFERENCES compras(id)
-);
-ALTER TABLE pedidos_cocina AUTO_INCREMENT = 1;
 
 -- Tabla 'compras'
 CREATE TABLE compras (
@@ -68,6 +60,15 @@ CREATE TABLE compras (
     FOREIGN KEY (id_cliente) REFERENCES cliente(id)
 );
 
+-- Tabla 'cocina'
+CREATE TABLE pedidos_cocina (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_compra INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'pendiente',
+    FOREIGN KEY (id_compra) REFERENCES compras(id)
+);
+
+ALTER TABLE pedidos_cocina AUTO_INCREMENT = 1;
 -- Tabla 'detalle_compra'
 CREATE TABLE detalle_compra (
     id INT PRIMARY KEY AUTO_INCREMENT,
