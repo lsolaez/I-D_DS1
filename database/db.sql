@@ -76,7 +76,7 @@ CREATE TABLE detalle_compra (
 
 CREATE TABLE empleados (
     nombre_completo VARCHAR(250) NOT NULL,
-    numero_id VARCHAR(50) PRIMARY KEY,
+    numero_identificacion VARCHAR(50) PRIMARY KEY,
     telefono VARCHAR(20) NOT NULL,
     roles VARCHAR(50) NOT NULL,
     username VARCHAR(255),
@@ -86,13 +86,13 @@ CREATE TABLE empleados (
 -- Tabla 'domiciliario'
 CREATE TABLE domiciliario (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    numero_id varchar(50),
+    numero_identificacion varchar(50),
     medio_transporte VARCHAR(50),
     horario_disponible DATETIME default CURRENT_TIMESTAMP,
     licencia_conduccion INT,
     fecha_fin_licencia DATE,
     estado VARCHAR(2) default 'Si',
-    FOREIGN KEY (numero_id) REFERENCES empleados(numero_id)
+    FOREIGN KEY (numero_identificacion) REFERENCES empleados(numero_identificacion)
 );
 
 

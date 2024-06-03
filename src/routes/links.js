@@ -306,7 +306,7 @@ router.get('/domiciliario/:id', isLoggedIn, async (req, res) => {
 
         // Obtener la dirección de entrega usando id_compra
         const direccionResult = await pool.query(`
-            SELECT direcciones.direccionCliente 
+            SELECT direcciones.direccionCliente, cliente.nombre_completo, cliente.telefono 
             FROM compras
             JOIN cliente ON cliente.id = compras.id_cliente
             JOIN direcciones ON cliente.id = direcciones.id_cliente
@@ -321,10 +321,14 @@ router.get('/domiciliario/:id', isLoggedIn, async (req, res) => {
         }
 
         const direccion = direccionResult[0].direccionCliente;
+        const nombre_completo = direccionResult[0].nombre_completo;
+        const telefono = direccionResult[0].telefono;
 
         res.render('links/domiciliario', {
             productos: productosResult,
             direccion,
+            nombre_completo,
+            telefono,
             id_domicilio,
             id_domiciliario
         });
