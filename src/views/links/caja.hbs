@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos para Recoger en Tienda</title>
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .card h2 {
+            margin-top: 0;
+        }
+        .card ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .card li {
+            background: #f9f9f9;
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .no-pedidos {
+            text-align: center;
+            font-size: 1.2em;
+            color: #777;
+            margin: 20px;
+        }
+        .btn-entregado {
+            display: block;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pedidos para Recoger en Tienda</h1>
+    {{#if message}}
+        <p>{{message}}</p>
+    {{else}}
+        {{#if pedidos.length}}
+            {{#each pedidos}}
+                <div class="card">
+                    <h2>Pedido ID: {{this.id_compra}}</h2>
+                    <ul>
+                        {{#each this.productos}}
+                            <li>{{this.nombre}} - Cantidad: {{this.cantidad}}</li>
+                        {{/each}}
+                    </ul>
+                    <form action="/links/marcar-pedido-entregado" method="POST">
+                        <input type="hidden" name="id_compra" value="{{this.id_compra}}">
+                        <button type="submit" class="btn-entregado">Pedido Entregado</button>
+                    </form>
+                </div>
+            {{/each}}
+        {{else}}
+            <p class="no-pedidos">No hay pedidos para recoger en tienda.</p>
+        {{/if}}
+    {{/if}}
+</body>
+</html>

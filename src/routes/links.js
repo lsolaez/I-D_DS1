@@ -149,7 +149,6 @@ router.post('/addDireccion', isLoggedIn, async (req, res) => {
     }
 });
 
-// Finalizar compra
 router.post('/cart/checkout', isLoggedIn, async (req, res) => {
     const user = req.user;
     if (!user) {
@@ -157,7 +156,8 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
     }
 
     const { id: id_usuario } = user;
-    const { deliveryOption, direccionId } = req.body;
+    const { deliveryOption, direccionId, nombre_completo, telefono } = req.body;
+    console.log(nombre_completo, telefono)
     if (!req.session.cart || req.session.cart.length === 0) {
         return res.json({ success: false, message: 'El carrito está vacío.' });
     }
@@ -167,7 +167,7 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         const clienteResult = await pool.query('SELECT * FROM cliente WHERE id = ?', [id_usuario]);
         if (clienteResult.length === 0) {
             // Si no está, insertar el usuario en la tabla cliente
-            await pool.query('INSERT INTO cliente (id, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, user.username, '']);
+            await pool.query('INSERT INTO cliente (id, nombre_completo, telefono) VALUES (?, ?, ?)', [id_usuario, nombre_completo, telefono]);
         }
 
         const total = req.session.cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
@@ -184,7 +184,7 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         }
 
         // Marcar el pedido como pendiente en la cocina
-        await pool.query('INSERT INTO pedidos_cocina (id_compra, estado) VALUES (?, ?)', [id_compra, 'recibido']);
+        await pool.query('INSERT INTO pedidos_cocina (id_compra, estado, Tipo_entrega) VALUES (?, ?, ?)', [id_compra, 'recibido', deliveryOption]);
 
         req.session.cart = []; // Vaciar el carrito después de la compra
         res.json({ success: true, message: 'Compra realizada con éxito.', roles: user.roles });
@@ -193,6 +193,8 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         res.json({ success: false, message: 'No se pudo realizar la compra.' });
     }
 });
+
+
 
 
 
@@ -334,8 +336,6 @@ router.post('/entregado', isLoggedIn, async (req, res) => {
     const fechaEntregaStr = fechaEntrega.format('YYYY-MM-DD');
     const horaEntregaStr = fechaEntrega.format('HH:mm:ss');
 
-    console.log('Fecha de Entrega:', fechaEntregaStr);
-    console.log('Hora de Entrega:', horaEntregaStr);
 
     try {
         // Actualizar la fecha y hora de entrega en la tabla domicilios
@@ -366,7 +366,7 @@ router.get('/cocina', isLoggedIn, async (req, res) => {
             FROM pedidos_cocina pc
             JOIN detalle_compra dc ON pc.id_compra = dc.id_compra
             JOIN producto p ON dc.id_producto = p.id
-            WHERE pc.estado = 'pendiente'
+            WHERE pc.estado = 'recibido'
         `);
 
         const pedidos = pedidosResult.reduce((acc, pedido) => {
@@ -388,39 +388,61 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
     const { id_compra } = req.body;
 
     try {
-        // Verificar si hay domiciliarios disponibles
-        const domiciliarioResult = await pool.query(`
-            SELECT id
-            FROM domiciliario
-            WHERE estado = 'Si'
-            ORDER BY horario_disponible ASC
-            LIMIT 1
-        `);
+        // Obtener el tipo de entrega del pedido
+        const tipoEntregaResult = await pool.query('SELECT Tipo_entrega FROM pedidos_cocina WHERE id_compra = ?', [id_compra]);
+        const tipoEntrega = tipoEntregaResult[0].Tipo_entrega;
 
-        if (domiciliarioResult.length === 0) {
-            return res.json({ success: false, message: 'Domiciliarios no disponibles por el momento.' });
+        if (tipoEntrega === 'domicilio') {
+            // Verificar si hay domiciliarios disponibles
+            const domiciliarioResult = await pool.query(`
+                SELECT id
+                FROM domiciliario
+                WHERE estado = 'Si'
+                ORDER BY horario_disponible ASC
+                LIMIT 1
+            `);
+
+            if (domiciliarioResult.length === 0) {
+                return res.json({ success: false, message: 'Domiciliarios no disponibles por el momento.' });
+            }
+
+            const id_domiciliario = domiciliarioResult[0].id;
+
+            // Marcar el pedido como listo en la cocina
+            await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
+
+            // Ajustar la fecha y hora a tu zona horaria local
+            const fechaEnvio = moment().tz('America/Bogota');
+            const fechaEnvioStr = fechaEnvio.format('YYYY-MM-DD');
+            const horaEnvioStr = fechaEnvio.format('HH:mm:ss');
+
+            await pool.query('INSERT INTO domicilios (id_compra, id_domiciliario, fecha_envio, hora_envio) VALUES (?, ?, ?, ?)', [id_compra, id_domiciliario, fechaEnvioStr, horaEnvioStr]);
+
+            // Actualizar estado del domiciliario
+            await pool.query('UPDATE domiciliario SET estado = ?, horario_disponible = ? WHERE id = ?', ['No', null, id_domiciliario]);
+
+            res.json({ success: true, message: 'Pedido marcado como listo y domiciliario asignado.' });
+        } else if (tipoEntrega === 'tienda') {
+            // Marcar el pedido como listo en la cocina
+            await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
+
+            const fechaFinPreparacion = moment().tz('America/Bogota');
+            const fechaFinPreparacionStr = fechaFinPreparacion.format('YYYY-MM-DD');
+            const horaFinPreparacionStr = fechaFinPreparacion.format('HH:mm:ss');
+
+            await pool.query('INSERT INTO recogida_en_tienda (id_compra, fecha_fin_preparación, hora_fin_preparación, fecha_recogida, hora_recogida) VALUES (?, ?, ?, ?, ?)', 
+            [id_compra, fechaFinPreparacionStr, horaFinPreparacionStr, null, null]);
+
+            res.json({ success: true, message: 'Pedido marcado como listo para recogida en tienda.' });
+        } else {
+            res.json({ success: false, message: 'Tipo de entrega no reconocido.' });
         }
-
-        const id_domiciliario = domiciliarioResult[0].id;
-
-        // Marcar el pedido como listo en la cocina
-        await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
-
-        const fechaEnvio = new Date();
-        const fechaEnvioStr = fechaEnvio.toISOString().slice(0, 10);
-        const horaEnvioStr = fechaEnvio.toISOString().slice(11, 19);
-
-        await pool.query('INSERT INTO domicilios (id_compra, id_domiciliario, fecha_envio, hora_envio) VALUES (?, ?, ?, ?)', [id_compra, id_domiciliario, fechaEnvioStr, horaEnvioStr]);
-
-        // Actualizar estado del domiciliario
-        await pool.query('UPDATE domiciliario SET estado = ?, horario_disponible = ? WHERE id = ?', ['No', null, id_domiciliario]);
-
-        res.json({ success: true, message: 'Pedido marcado como listo y domiciliario asignado.' });
     } catch (error) {
         console.error(error);
         res.json({ success: false, message: 'No se pudo marcar el pedido como listo.' });
     }
 });
+
 
 
 
@@ -473,6 +495,12 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
                 estado_preparado = true;
                 estado_recibido = true;
             }
+                        // Formatear la fecha de compra
+            const fecha_compra = new Date(compra.fecha_compra).toLocaleDateString('es-CO', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
 
             // Obtener los productos de la compra
             const productosResult = await pool.query(`
@@ -481,14 +509,13 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
                 JOIN producto ON detalle_compra.id_producto = producto.id
                 WHERE detalle_compra.id_compra = ?
             `, [compra.id]);
-
             return {
                 id: compra.id,
                 estado_recibido,
                 estado_preparado,
                 estado_enviado,
                 estado_entregado,
-                fecha_compra: compra.fecha_compra,
+                fecha_compra,
                 hora_compra: compra.hora_compra,
                 total: compra.total,
                 productos: productosResult
@@ -504,6 +531,131 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
 
 
 
+router.get('/caja', isLoggedIn, async (req, res) => {
+    try {
+        const pedidosTiendaResult = await pool.query(`
+            SELECT rt.id_compra, p.nombre, dc.cantidad
+            FROM recogida_en_tienda rt
+            JOIN detalle_compra dc ON rt.id_compra = dc.id_compra
+            JOIN producto p ON dc.id_producto = p.id
+            WHERE rt.fecha_recogida IS NULL
+        `);
 
+        const pedidosTienda = pedidosTiendaResult.reduce((acc, pedido) => {
+            if (!acc[pedido.id_compra]) {
+                acc[pedido.id_compra] = { id_compra: pedido.id_compra, productos: [] };
+            }
+            acc[pedido.id_compra].productos.push({ nombre: pedido.nombre, cantidad: pedido.cantidad });
+            return acc;
+        }, {});
+
+        res.render('links/caja', { pedidos: Object.values(pedidosTienda) });
+    } catch (error) {
+        console.error(error);
+        res.render('links/caja', { message: 'Error al obtener los pedidos para recoger en tienda.' });
+    }
+});
+
+router.post('/marcar-pedido-entregado', isLoggedIn, async (req, res) => {
+    const { id_compra } = req.body;
+
+    try {
+        // Obtener la fecha y hora actuales en la zona horaria de Bogotá
+        const fechaActual = moment.tz('America/Bogota');
+        const fechaRecogidaStr = fechaActual.format('YYYY-MM-DD');
+        const horaRecogidaStr = fechaActual.format('HH:mm:ss');
+
+        // Marcar el pedido como entregado
+        await pool.query('UPDATE recogida_en_tienda SET fecha_recogida = ?, hora_recogida = ? WHERE id_compra = ?', [
+            fechaRecogidaStr, // fecha_recogida
+            horaRecogidaStr, // hora_recogida
+            id_compra
+        ]);
+
+        res.redirect('/links/caja');
+    } catch (error) {
+        console.error(error);
+        res.render('links/caja', { message: 'Error al marcar el pedido como entregado.' });
+    }
+});
+
+router.get('/pedidos', isLoggedIn, async (req, res) => {
+    try {
+        // Obtener todas las compras de todos los clientes
+        const comprasResult = await pool.query(`
+            SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
+                   pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
+                   domicilios.fecha_envio, domicilios.fecha_entrega,
+                   recogida_en_tienda.fecha_fin_preparación, recogida_en_tienda.hora_fin_preparación,
+                   recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
+                   cliente.nombre AS nombre_cliente, cliente.apellido AS apellido_cliente
+            FROM compras
+            LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
+            LEFT JOIN domicilios ON compras.id = domicilios.id_compra
+            LEFT JOIN recogida_en_tienda ON compras.id = recogida_en_tienda.id_compra
+            LEFT JOIN cliente ON compras.id_cliente = cliente.id
+            ORDER BY compras.fecha_compra DESC, compras.hora_compra DESC
+        `);
+
+        if (comprasResult.length === 0) {
+            return res.render('links/consultarPedido', { pedidos: [] });
+        }
+
+        const pedidos = await Promise.all(comprasResult.map(async compra => {
+            let estado_recibido = false;
+            let estado_preparado = false;
+            let estado_enviado = false;
+            let estado_entregado = false;
+
+            if (compra.estado_cocina === 'recibido' || compra.estado_cocina === 'listo') {
+                estado_recibido = true;
+            }
+
+            if (compra.estado_cocina === 'listo') {
+                estado_preparado = true;
+            }
+
+            if (compra.fecha_entrega || compra.fecha_recogida) {
+                estado_entregado = true;
+                estado_enviado = true;
+                estado_preparado = true;
+                estado_recibido = true;
+            } else if (compra.fecha_envio) {
+                estado_enviado = true;
+                estado_preparado = true;
+                estado_recibido = true;
+            }
+
+            // Formatear la fecha de compra
+            const fecha_compra = moment(compra.fecha_compra).tz('America/Bogota').format('DD-MM-YYYY');
+
+            // Obtener los productos de la compra
+            const productosResult = await pool.query(`
+                SELECT producto.nombre, detalle_compra.cantidad
+                FROM detalle_compra
+                JOIN producto ON detalle_compra.id_producto = producto.id
+                WHERE detalle_compra.id_compra = ?
+            `, [compra.id]);
+
+            return {
+                id: compra.id,
+                cliente: `${compra.nombre_cliente} ${compra.apellido_cliente}`,
+                estado_recibido,
+                estado_preparado,
+                estado_enviado,
+                estado_entregado,
+                fecha_compra,
+                hora_compra: compra.hora_compra,
+                total: compra.total,
+                productos: productosResult
+            };
+        }));
+
+        res.render('links/pedidos', { pedidos });
+    } catch (error) {
+        console.error(error);
+        res.render('links/pedidos', { pedidos: [], message: 'Error al obtener el estado de los pedidos.' });
+    }
+});
 
 module.exports = router;

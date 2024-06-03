@@ -1,6 +1,7 @@
 CREATE DATABASE bakery;
 USE bakery;
 
+
 -- Tabla 'usuario'
 CREATE TABLE users (
     id INT(11) NOT NULL AUTO_INCREMENT,
@@ -11,16 +12,15 @@ CREATE TABLE users (
     PRIMARY KEY (id),
     unique(username)
 );
-ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'cocinero') DEFAULT 'usuario';
+ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'cocinero', 'cajero') DEFAULT 'usuario';
 
 ALTER TABLE users AUTO_INCREMENT = 1; 
 
 CREATE TABLE cliente (
     id INT PRIMARY KEY,
-    nombre VARCHAR(50),
-    apellido VARCHAR(50),
-    id_usuario INT,
-    FOREIGN KEY (id_usuario) REFERENCES users(id)
+    nombre_completo VARCHAR(50),
+    telefono varchar(10),
+    FOREIGN KEY (id) REFERENCES users(id)
 );
 
 -- Tabla 'direcciones'
@@ -43,13 +43,6 @@ CREATE TABLE producto (
     categoria VARCHAR(50)
 );
 
--- Tabla 'caja'
-CREATE TABLE caja (
-    id INT PRIMARY KEY,
-    detalle_tarifa VARCHAR(100),
-    pago_pedido DECIMAL(10,2)
-);
-
 -- Tabla 'compras'
 CREATE TABLE compras (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -65,6 +58,7 @@ CREATE TABLE pedidos_cocina (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_compra INT NOT NULL,
     estado VARCHAR(50) DEFAULT 'pendiente',
+    Tipo_entrega VARCHAR(50),
     FOREIGN KEY (id_compra) REFERENCES compras(id)
 );
 
@@ -82,7 +76,7 @@ CREATE TABLE detalle_compra (
 
 CREATE TABLE empleados (
     nombre_completo VARCHAR(250) NOT NULL,
-    numero_identificacion VARCHAR(50) PRIMARY KEY,
+    numero_id VARCHAR(50) PRIMARY KEY,
     telefono VARCHAR(20) NOT NULL,
     roles VARCHAR(50) NOT NULL,
     username VARCHAR(255),
@@ -92,13 +86,13 @@ CREATE TABLE empleados (
 -- Tabla 'domiciliario'
 CREATE TABLE domiciliario (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    numero_identificacion varchar(50),
+    numero_id varchar(50),
     medio_transporte VARCHAR(50),
     horario_disponible DATETIME default CURRENT_TIMESTAMP,
     licencia_conduccion INT,
     fecha_fin_licencia DATE,
     estado VARCHAR(2) default 'Si',
-    FOREIGN KEY (numero_identificacion) REFERENCES empleados(numero_identificacion)
+    FOREIGN KEY (numero_id) REFERENCES empleados(numero_id)
 );
 
 
@@ -127,3 +121,13 @@ CREATE TABLE domicilios (
 );
 ALTER TABLE domicilios  AUTO_INCREMENT = 1;
 
+-- Tabla 'recogida_en_tienda'
+CREATE TABLE recogida_en_tienda (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_compra INT NOT NULL,
+    fecha_fin_preparación DATE,
+    hora_fin_preparación TIME,
+    fecha_recogida DATE,
+    hora_recogida TIME,
+    FOREIGN KEY (id_compra) REFERENCES compras(id)
+);

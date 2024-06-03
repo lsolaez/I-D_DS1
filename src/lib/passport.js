@@ -8,19 +8,33 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, username, password, done) => {
-    const { id_persona } = req.body;
-    let newUser = {
+    const { nombre_completo, telefono, id_cliente } = req.body;
+    const newUser = {
         username,
-        password,
-        id_persona,
+        password: await helpers.encryptPassword(password),
+        id_persona: id_cliente,
         roles: 'usuario'
     };
-    newUser.password = await helpers.encryptPassword(password);
-    newUser.roles = 'usuario';
-    // Saving in the Database
-    const result = await pool.query('INSERT INTO users SET ?', newUser);
-    newUser.id = result.insertId;
-    return done(null, newUser);
+
+    try {
+        // Insertar en la tabla users
+        const result = await pool.query('INSERT INTO users SET ?', [newUser]);
+        const id_usuario = await pool.query ('SELECT id from users where id_persona=?', [id_cliente]);
+        // Insertar en la tabla clientes
+        const newClient = {
+            id: id_usuario[0].id,
+            nombre_completo,
+            telefono,
+        };
+        await pool.query('INSERT INTO cliente SET ?', [newClient]);
+
+        newUser.id = result.insertId; // Obtener el ID insertado
+
+        done(null, newUser);
+    } catch (err) {
+        console.error(err);
+        done(err);
+    }
 }));
 
 passport.use('local.signin', new LocalStrategy({

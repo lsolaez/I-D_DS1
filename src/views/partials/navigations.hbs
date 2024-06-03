@@ -12,8 +12,12 @@
             <a href="/links" class="nav-link active" aria-current="page">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/admin">Admin Panel</a>
+            <a class="nav-link" href="/links/pedidos">Pedidos</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin">Estadisticas</a>
+          </li>
+
           {{/isRole}}
           {{#isRole user "usuario"}}
           <li class="nav-item">
@@ -31,6 +35,11 @@
           {{#isRole user "cocinero"}}
           <li class="nav-item">
             <a href="/links/cocina" class="nav-link active" aria-current="page">Cocina</a>
+          </li>
+          {{/isRole}}
+          {{#isRole user "cajero"}}
+          <li class="nav-item">
+            <a href="/links/caja" class="nav-link active" aria-current="page">Caja</a>
           </li>
           {{/isRole}}
           {{#isRole user "domiciliario"}}
