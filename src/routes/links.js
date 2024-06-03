@@ -207,12 +207,6 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
     }
 });
 
-
-
-
-
-
-
 router.get('/empleado', isLoggedIn, (req, res) => {
     res.render('links/empleados', { script: '' });
 });
@@ -594,14 +588,13 @@ router.post('/marcar-pedido-entregado', isLoggedIn, async (req, res) => {
 
 router.get('/pedidos', isLoggedIn, async (req, res) => {
     try {
-        // Obtener todas las compras de todos los clientes
         const comprasResult = await pool.query(`
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
-                   pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
-                   domicilios.fecha_envio, domicilios.fecha_entrega,
-                   recogida_en_tienda.fecha_fin_preparación, recogida_en_tienda.hora_fin_preparación,
-                   recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
-                   cliente.nombre AS nombre_cliente, cliente.apellido AS apellido_cliente
+            pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
+            domicilios.fecha_envio, domicilios.fecha_entrega,
+            recogida_en_tienda.fecha_fin_preparación, recogida_en_tienda.hora_fin_preparación,
+            recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
+            cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono
             FROM compras
             LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
             LEFT JOIN domicilios ON compras.id = domicilios.id_compra
@@ -609,10 +602,6 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
             LEFT JOIN cliente ON compras.id_cliente = cliente.id
             ORDER BY compras.fecha_compra DESC, compras.hora_compra DESC
         `);
-
-        if (comprasResult.length === 0) {
-            return res.render('links/consultarPedido', { pedidos: [] });
-        }
 
         const pedidos = await Promise.all(comprasResult.map(async compra => {
             let estado_recibido = false;
@@ -640,7 +629,11 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
             }
 
             // Formatear la fecha de compra
-            const fecha_compra = moment(compra.fecha_compra).tz('America/Bogota').format('DD-MM-YYYY');
+            const fecha_compra = new Date(compra.fecha_compra).toLocaleDateString('es-CO', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
 
             // Obtener los productos de la compra
             const productosResult = await pool.query(`
@@ -652,7 +645,6 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
 
             return {
                 id: compra.id,
-                cliente: `${compra.nombre_cliente} ${compra.apellido_cliente}`,
                 estado_recibido,
                 estado_preparado,
                 estado_enviado,
@@ -660,7 +652,9 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
                 fecha_compra,
                 hora_compra: compra.hora_compra,
                 total: compra.total,
-                productos: productosResult
+                productos: productosResult,
+                nombre_cliente: compra.nombre_cliente,
+                telefono: compra.telefono
             };
         }));
 
@@ -671,22 +665,42 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
     }
 });
 
+
 router.get('/estadisticas', isLoggedIn, async (req, res) => {
     try {
-        const result = await pool.query(`
+        const { startDate, endDate } = req.query;
+        let query = `
             SELECT producto.nombre, SUM(detalle_compra.cantidad) as cantidad 
             FROM detalle_compra
             JOIN compras ON detalle_compra.id_compra = compras.id
             JOIN producto ON detalle_compra.id_producto = producto.id
-            GROUP BY producto.nombre
-        `);
+        `;
 
-        res.render('links/estadisticas', { data: JSON.stringify(result) });
+        const queryParams = [];
+
+        if (startDate && endDate) {
+            query += ' WHERE compras.fecha_compra BETWEEN ? AND ?';
+            queryParams.push(startDate, endDate);
+        } else if (startDate) {
+            query += ' WHERE compras.fecha_compra >= ?';
+            queryParams.push(startDate);
+        } else if (endDate) {
+            query += ' WHERE compras.fecha_compra <= ?';
+            queryParams.push(endDate);
+        }
+
+        query += ' GROUP BY producto.nombre';
+
+        const result = await pool.query(query, queryParams);
+
+        res.render('links/estadisticas', { data: JSON.stringify(result).replace(/\"/g, '\\"') });
     } catch (error) {
         console.error(error);
         res.render('links/estadisticas', { data: "[]" });
     }
 });
+
+
 
 
 module.exports = router;

@@ -8,16 +8,54 @@
 <body>
     <div class="container">
         <h1>Estadísticas de Productos Más Comprados</h1>
+        <form id="dateForm" method="GET" action="/links/estadisticas">
+            <label for="startDate">Fecha de inicio:</label>
+            <input type="date" id="startDate" name="startDate">
+            <label for="endDate">Fecha final:</label>
+            <input type="date" id="endDate" name="endDate">
+            <button type="submit">Filtrar</button>
+        </form>
         <canvas id="barChart" width="400" height="200"></canvas>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const ctx = document.getElementById('barChart').getContext('2d');
-            const data = JSON.parse('{{data}}');
+            const data = JSON.parse(`{{{data}}}`);
             console.log(data); // Para verificar los datos en la consola del navegador
+
             const labels = data.map(item => item.nombre);
             const cantidades = data.map(item => item.cantidad);
+
+            // Definir una gama de colores cálidos diferentes
+            const warmColors = [
+                'rgba(255, 99, 132, 0.2)', // Rojo claro
+                'rgba(255, 159, 64, 0.2)', // Naranja
+                'rgba(255, 205, 86, 0.2)', // Amarillo
+                'rgba(255, 140, 0, 0.2)', // Naranja oscuro
+                'rgba(255, 99, 71, 0.2)', // Tomate
+                'rgba(255, 69, 0, 0.2)', // Rojo oscuro
+                'rgba(255, 165, 0, 0.2)', // Naranja más claro
+                'rgba(255, 182, 193, 0.2)', // Rosado claro
+                'rgba(255, 228, 181, 0.2)', // Mocca claro
+                'rgba(255, 160, 122, 0.2)'  // Salmón claro
+            ];
+            const warmBorderColors = [
+                'rgba(255, 99, 132, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255, 205, 86, 1)',
+                'rgba(255, 140, 0, 1)',
+                'rgba(255, 99, 71, 1)',
+                'rgba(255, 69, 0, 1)',
+                'rgba(255, 165, 0, 1)',
+                'rgba(255, 182, 193, 1)',
+                'rgba(255, 228, 181, 1)',
+                'rgba(255, 160, 122, 1)'
+            ];
+
+            // Asignar colores a cada barra
+            const backgroundColors = cantidades.map((_, index) => warmColors[index % warmColors.length]);
+            const borderColors = cantidades.map((_, index) => warmBorderColors[index % warmBorderColors.length]);
 
             new Chart(ctx, {
                 type: 'bar',
@@ -26,8 +64,8 @@
                     datasets: [{
                         label: 'Cantidad Comprada',
                         data: cantidades,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
                         borderWidth: 1
                     }]
                 },
@@ -36,10 +74,25 @@
                         y: {
                             beginAtZero: true
                         }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y;
+                                }
+                            }
+                        }
                     }
                 }
             });
         });
     </script>
+    <div style="position: fixed; bottom: 20px; left: 20px;">
+        <a href="/links/" class="btn btn-primary">Volver</a>
+    </div>
 </body>
 </html>
