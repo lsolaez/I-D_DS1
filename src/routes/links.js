@@ -671,4 +671,24 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
     }
 });
 
+router.get('/estadisticas', isLoggedIn, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT producto.nombre, SUM(detalle_compra.cantidad) as cantidad 
+            FROM detalle_compra
+            JOIN compras ON detalle_compra.id_compra = compras.id
+            JOIN producto ON detalle_compra.id_producto = producto.id
+            GROUP BY producto.nombre
+        `);
+
+        res.render('links/estadisticas', { data: JSON.stringify(result) });
+    } catch (error) {
+        console.error(error);
+        res.render('links/estadisticas', { data: "[]" });
+    }
+});
+
+
 module.exports = router;
+
+
