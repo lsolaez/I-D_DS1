@@ -237,6 +237,21 @@
       const subtotal = price * currentQty;
       $(this).closest('.product').find('.subtotal').text(`Subtotal: $${subtotal.toFixed(2)}`);
       updateTotal();
+
+      // Actualizar la cantidad en el servidor
+      $.ajax({
+        url: '/links/cart/update-qty/' + cartId,
+        type: 'POST',
+        data: { cantidad: currentQty },
+        success: function(response) {
+          if (!response.success) {
+            Swal.fire('Error!', response.message, 'error');
+          }
+        },
+        error: function(xhr, status, error) {
+          Swal.fire('Error!', 'No se pudo actualizar la cantidad. Inténtalo de nuevo.', 'error');
+        }
+      });
     });
 
     function updateTotal() {

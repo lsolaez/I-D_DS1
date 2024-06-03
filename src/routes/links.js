@@ -121,6 +121,19 @@ router.post('/cart/delete/:cartId', isLoggedIn, (req, res) => {
     }
 });
 
+router.post('/cart/update-qty/:cartId', isLoggedIn, (req, res) => {
+    const { cartId } = req.params;
+    const { cantidad } = req.body;
+
+    const cartIndex = req.session.cart.findIndex(item => item.cartId == cartId);
+    if (cartIndex > -1) {
+        req.session.cart[cartIndex].cantidad = cantidad;
+        res.json({ success: true, message: 'Cantidad actualizada correctamente.' });
+    } else {
+        res.status(404).json({ success: false, message: 'Producto no encontrado.' });
+    }
+});
+
 // Guardar nueva dirección
 router.post('/addDireccion', isLoggedIn, async (req, res) => {
     const { direccion } = req.body;
