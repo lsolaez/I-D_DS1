@@ -8,7 +8,7 @@ module.exports = {
         connectionLimit: 10,
         host: 'localhost',
         user: 'root',
-        password: 'Password',
+        password: 'Fotija123',
         database: 'bakery'
     }
 };
