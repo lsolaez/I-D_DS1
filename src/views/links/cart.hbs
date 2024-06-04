@@ -158,7 +158,7 @@
         <div>
           <h3>Opciones de Entrega</h3>
           <label>
-            <input type="radio" name="deliveryOption1" value="domicilio">
+            <input type="radio" name="deliveryOption" value="domicilio">
             Entrega a domicilio
           </label>
           <div id="direccionDomicilio" style="display: none;">
@@ -176,7 +176,7 @@
             </div>
           </div>
           <label>
-            <input type="radio" name="deliveryOption2" value="tienda">
+            <input type="radio" name="deliveryOption" value="tienda">
             Recoger en tienda
           </label>
         </div>
@@ -376,8 +376,9 @@
   document.addEventListener('DOMContentLoaded', (event) => 
   {
     // Selecciona los elementos de radio
-    const deliveryOption = document.querySelector('input[name="deliveryOption1"]');
-    const direccion = document.querySelector('input[name="deliveryOption2"]');
+    
+    const deliveryOption = document.querySelector('input[value="domicilio"]');
+    const direccion = document.querySelector('input[value="tienda"]');
 
     // Selecciona el div
     const container1 = document.querySelector('.progressBarIncomplete');
