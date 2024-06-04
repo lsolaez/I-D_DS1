@@ -79,6 +79,24 @@ router.post('/edit/:id', isLoggedIn, async (req, res) => {
     res.redirect('/links');
 });
 
+//Obtener datos del carrito
+router.get('/listUsers', isLoggedIn, async (req, res) => {
+    const { id } = req.params;
+    
+    res.render('listUsers', { cart: req.session.cart });
+});
+
+router.post('/cart', isLoggedIn, async (req, res) => {
+    const { deliveryOption, direccion } = req.body;
+    let deliverySelected = false;
+
+    if (deliveryOption === 'domicilio' || direccion) {
+        deliverySelected = true;
+    }
+
+    res.render('listUsers', { cart: req.session.cart, deliverySelected: deliverySelected });
+});
+
 // Agregar producto al carrito
 router.post('/cart/add/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;

@@ -102,6 +102,15 @@ router.post('/signin', [
     })(req, res, next);
 });
 
+router.get('/cart/status', isLoggedIn, async (req, res) => {
+    // Obtener el carrito de la sesión
+    const cart = req.session.cart;
+
+    // Enviar el carrito como respuesta
+    res.set('Cache-Control', 'no-store');
+    res.json({ cart: req.session.cart });
+});
+
 // Añadir el rol del usuario al contexto de la vista
 router.get('/profile', isLoggedIn, (req, res) => {
     res.render('profile', { user: req.user });

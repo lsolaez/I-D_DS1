@@ -82,6 +82,49 @@
   </style>
 </head>
 <body>
+
+<div class="progressBarIncomplete">	
+        <div class="wrapper">	
+            <div class="arrow-steps clearfix">
+                {{#if cart}}
+                      <div class="step done"> <span>Selecciona un producto</span> </div>
+                      <div class="step done"> <span>Abre tu carrito</span> </div>
+                          {{#if deliverySelected}}
+                            <div class="step done"> <span> Domicilio o recojer?</span> </div>
+                          {{else}}
+                            <div class="step current"> <span> Domicilio o recojer?</span> </div>
+                          {{/if}}
+                      {{else}}
+                      <div class="step current"> <span>Selecciona un producto</span> </div>
+                      <div class="step"> <span>Abre tu carrito</span> </div>
+                      <div class="step" name="entregaElegida"> <span> Elige tipo de entrega</span> </div>
+                {{/if}}
+                    <div class="step"> <span>Confirma tu pedido!</span> </div>
+            </div>
+        </div>
+</div>
+<div class="progressBarComplete" style="display: none;">	
+        <div class="wrapper">	
+            <div class="arrow-steps clearfix">
+                {{#if cart}}
+                      <div class="step done"> <span>Selecciona un producto</span> </div>
+                      <div class="step done"> <span>Abre tu carrito</span> </div>
+                      <div class="step done"> <span> Elige tipo de entrega</span> </div>
+                      <div class="step current"> <span>Confirma tu pedido!</span> </div>
+                      
+                {{else}}
+                      <div class="step current"> <span>Selecciona un producto</span> </div>
+                      <div class="step"> <span>Abre tu carrito</span> </div>
+                      <div class="step done"> <span> Elige tipo de entrega</span> </div>
+                      <div class="step"> <span>Confirma tu pedido!</span> </div>
+                {{/if}}
+                    
+            </div>
+        </div>
+</div>
+
+
+
   <div class="cart-container">
     <div class="rectangles">
       <div class="rectangle rectangle-left">
@@ -328,6 +371,32 @@
       });
     });
   });
+
+  // Asegúrate de que el DOM esté completamente cargado antes de intentar adjuntar los controladores de eventos
+  document.addEventListener('DOMContentLoaded', (event) => 
+  {
+    // Selecciona los elementos de radio
+    const deliveryOption = document.querySelector('input[name="deliveryOption"]');
+    const direccion = document.querySelector('input[name="direccion"]');
+
+    // Selecciona el div
+    const container1 = document.querySelector('.progressBarIncomplete');
+    const container2 = document.querySelector('.progressBarComplete');
+
+    // Función para manejar el cambio
+    const handleChange = () => {
+        container1.style.display = 'none'; // Oculta el div
+        container2.style.display = 'block';
+        
+    };
+
+    // Adjunta el controlador de eventos
+    deliveryOption.addEventListener('change', handleChange);
+    direccion.addEventListener('change', handleChange);
+  });
+
+
+
   </script>
 </body>
 </html>

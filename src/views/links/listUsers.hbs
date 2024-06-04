@@ -1,3 +1,20 @@
+<div class="progressBarIncomplete">	
+        <div class="wrapper">	
+            <div class="arrow-steps clearfix">
+                {{#if cart}}
+                    <div class="step done" name="step1"> <span>Selecciona un producto</span> </div>
+                    <div class="step current" name="step2"> <span>Abre tu carrito</span> </div>
+                {{else}} 
+                    <div class="step current" name="step1"> <span>Selecciona un producto</span> </div>  
+                    <div class="step" name="step2"> <span>Abre tu carrito</span> </div>
+                {{/if}}
+                    
+                    <div class="step" name="step3"> <span> Elige tipo de entrega</span> </div>
+                    <div class="step" name="step5"> <span>Confirma tu pedido!</span> </div>
+            </div>
+        </div>
+</div>
+
 <div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
     <div class="row">
         {{#each productos}}
@@ -11,6 +28,13 @@
                     <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
                     <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
                 </div>
+            </div>
+        </div>
+        {{else}}
+        <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center">
+                <p>No hay productos guardados todavía.</p>
+                <a href="/links/add" class="btn btn-primary">Crear uno!</a>
             </div>
         </div>
         {{/each}}
@@ -30,7 +54,10 @@ $(document).ready(function() {
                     title: 'Success!',
                     text: data.message,
                     icon: 'success',
-                    confirmButtonText: 'OK'
+                    confirmButtonText: 'OK',
+                    willClose: function() {
+                        window.location.reload();
+                    }
                 });
             } else {
                 Swal.fire({
@@ -46,6 +73,7 @@ $(document).ready(function() {
                 text: 'An error occurred, please try again later.',
                 icon: 'error',
                 confirmButtonText: 'OK'
+
             });
         });
     });
