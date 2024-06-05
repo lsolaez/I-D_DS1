@@ -79,48 +79,121 @@
     .subtotal {
       font-weight: bold;
     }
+    .progressBarIncomplete, .progressBarComplete {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.arrow-steps {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.arrow-steps .step {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 10px 20px;
+    background: #d9d9d9;
+    color: #333;
+    text-align: center;
+    text-transform: uppercase;
+    transition: background 0.3s ease-in-out;
+    margin-right: 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.arrow-steps .step.current {
+    background: #dc3545;;
+    color: white;
+}
+
+.arrow-steps .step.done {
+    background: #28a745;
+    color: white;
+}
+
+.arrow-steps .step:last-child {
+    margin-right: 0;
+}
+
+.arrow-steps .step::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -20px;
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 20px solid #d9d9d9;
+    z-index: 2;
+}
+
+.arrow-steps .step.current::after {
+    border-left-color: #dc3545;;
+}
+
+.arrow-steps .step.done::after {
+    border-left-color: #28a745;
+}
+
+.arrow-steps .step:last-child::after {
+    display: none;
+}
   </style>
 </head>
 <body>
 
-<div class="progressBarIncomplete">	
-        <div class="wrapper">	
-            <div class="arrow-steps clearfix">
-                {{#if cart}}
-                      <div class="step done"> <span>Selecciona un producto</span> </div>
-                      <div class="step done"> <span>Abre tu carrito</span> </div>
-                          {{#if deliverySelected}}
-                            <div class="step done"> <span> Domicilio o recojer?</span> </div>
-                          {{else}}
-                            <div class="step current"> <span> Domicilio o recojer?</span> </div>
-                          {{/if}}
+<div class="progressBarIncomplete">  
+    <div class="wrapper">  
+        <div class="arrow-steps clearfix">
+            {{#if cart}}
+                  <div class="step done"> <span>Selecciona un producto</span> </div>
+                  <div class="step done"> <span>Abre tu carrito</span> </div>
+                      {{#if deliverySelected}}
+                        <div class="step done"> <span> Domicilio o recoger?</span> </div>
                       {{else}}
-                      <div class="step current"> <span>Selecciona un producto</span> </div>
-                      <div class="step"> <span>Abre tu carrito</span> </div>
-                      <div class="step" name="entregaElegida"> <span> Elige tipo de entrega</span> </div>
-                {{/if}}
-                    <div class="step"> <span>Confirma tu pedido!</span> </div>
-            </div>
+                        <div class="step current"> <span> Domicilio o recoger?</span> </div>
+                      {{/if}}
+                  {{else}}
+                  <div class="step current"> <span>Selecciona un producto</span> </div>
+                  <div class="step"> <span>Abre tu carrito</span> </div>
+                  <div class="step" name="entregaElegida"> <span> Elige tipo de entrega</span> </div>
+            {{/if}}
+                <div class="step"> <span>Confirma tu pedido!</span> </div>
         </div>
+    </div>
 </div>
-<div class="progressBarComplete" style="display: none;">	
-        <div class="wrapper">	
-            <div class="arrow-steps clearfix">
-                {{#if cart}}
-                      <div class="step done"> <span>Selecciona un producto</span> </div>
-                      <div class="step done"> <span>Abre tu carrito</span> </div>
-                      <div class="step done"> <span> Elige tipo de entrega</span> </div>
-                      <div class="step current"> <span>Confirma tu pedido!</span> </div>
-                      
-                {{else}}
-                      <div class="step current"> <span>Selecciona un producto</span> </div>
-                      <div class="step"> <span>Abre tu carrito</span> </div>
-                      <div class="step done"> <span> Elige tipo de entrega</span> </div>
-                      <div class="step"> <span>Confirma tu pedido!</span> </div>
-                {{/if}}
-                    
-            </div>
+
+<div class="progressBarComplete" style="display: none;">  
+    <div class="wrapper">  
+        <div class="arrow-steps clearfix">
+            {{#if cart}}
+                  <div class="step done"> <span>Selecciona un producto</span> </div>
+                  <div class="step done"> <span>Abre tu carrito</span> </div>
+                  <div class="step done"> <span> Elige tipo de entrega</span> </div>
+                  <div class="step current"> <span>Confirma tu pedido!</span> </div>
+            {{else}}
+                  <div class="step current"> <span>Selecciona un producto</span> </div>
+                  <div class="step"> <span>Abre tu carrito</span> </div>
+                  <div class="step done"> <span> Elige tipo de entrega</span> </div>
+                  <div class="step"> <span>Confirma tu pedido!</span> </div>
+            {{/if}}
         </div>
+    </div>
 </div>
 
 

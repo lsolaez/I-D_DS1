@@ -1,7 +1,7 @@
 <div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
     <div class="row">
         {{#each productos}}
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
             <div class="card text-center">
                 <div class="card-body">
                     <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
@@ -19,7 +19,7 @@
             </div>
         </div>
         {{else}}
-        <div class="col-md-4 mx-auto">
+        <div class="col-md-4 mx-auto mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
             <div class="card card-body text-center">
                 <p>No hay productos guardados todavía.</p>
                 <a href="/links/add" class="btn btn-primary">Crear uno!</a>
