@@ -99,7 +99,7 @@
                     <p class="m-2">{{descripcion}}</p>
                     <p class="m-2">Precio: {{precio}}</p>
                     <p class="m-2">Categoria: {{categoria}}</p>
-                    <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
+                    <p class="m-2">{{confirmaciondedisponibilidad}}</p>
                     {{#ifCond confirmaciondedisponibilidad '==' 'Disponible'}}
                     <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
                     {{/ifCond}}
