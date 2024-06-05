@@ -232,51 +232,83 @@ router.get('/empleado', isLoggedIn, (req, res) => {
 router.post('/empleado', isLoggedIn, async (req, res) => {
     const { username, password, roles, nombre_completo, id, telefono, tipo_vehiculo, numero_licencia, fecha_vencimiento_licencia } = req.body;
 
-    const existingUser = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
-    if (existingUser.length > 0) {
-        const script = `Swal.fire('Error', 'Ya existe un usuario con el mismo nombre de usuario.', 'error');`;
-        return res.render('links/empleados', { script });
-    }
+    try {
+        // Verificar si el nombre de usuario ya existe
+        const existingUser = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+        if (existingUser.length > 0) {
+            const script = `Swal.fire('Error', 'Ya existe un usuario con el mismo nombre de usuario.', 'error');`;
+            return res.render('links/empleados', { script });
+        }
 
-    const isValidText = (text) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/.test(text);
-    if (!isValidText(username) || !isValidText(roles)) {
-        const script = `Swal.fire('Error', 'Los campos de texto deben contener solo letras.', 'error');`;
-        return res.render('links/empleados', { script });
-    }
+        // Verificar si el número de identificación ya existe
+        const existingId = await pool.query('SELECT * FROM users WHERE id_persona = ?', [id]);
+        if (existingId.length > 0) {
+            const script = `Swal.fire('Error', 'Ya existe un usuario con el mismo número de identificación.', 'error');`;
+            return res.render('links/empleados', { script });
+        }
 
-    if (password.length < 6) {
-        const script = `Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres.', 'error');`;
-        return res.render('links/empleados', { script });
-    }
+        // Verificar si el número de licencia ya existe si el tipo de vehículo es carro o moto
+        if (tipo_vehiculo === 'carro' || tipo_vehiculo === 'moto') {
+            const existingLicense = await pool.query('SELECT * FROM domiciliario WHERE licencia_conduccion = ?', [numero_licencia]);
+            if (existingLicense.length > 0) {
+                const script = `Swal.fire('Error', 'Ya existe un domiciliario con el mismo número de licencia.', 'error');`;
+                return res.render('links/empleados', { script });
+            }
+        }
 
-    const encryptedPassword = await helpers.encryptPassword(password)
-    const newUser = {
-        username,
-        password: encryptedPassword,
-        id_persona: id,
-        roles
-    };
-    await pool.query('INSERT INTO users SET ?', [newUser]);
-    const newEmployee = {
-        nombre_completo,
-        numero_identificacion: id,
-        telefono,
-        roles,
-        username
-    };
-    await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
-    if (roles === 'domiciliario') {
-        const newDomiciliario = {
-            numero_identificacion: id,
-            medio_transporte: roles === 'domiciliario' ? tipo_vehiculo : null,
-            licencia_conduccion: (tipo_vehiculo === 'moto' || tipo_vehiculo === 'carro') ? numero_licencia : null,
-            fecha_fin_licencia: (tipo_vehiculo === 'moto' || tipo_vehiculo === 'carro') ? fecha_vencimiento_licencia : null
+        // Validar texto
+        const isValidText = (text) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/.test(text);
+        if (!isValidText(username) || !isValidText(roles)) {
+            const script = `Swal.fire('Error', 'Los campos de texto deben contener solo letras.', 'error');`;
+            return res.render('links/empleados', { script });
+        }
+
+        // Validar contraseña
+        if (password.length < 6) {
+            const script = `Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres.', 'error');`;
+            return res.render('links/empleados', { script });
+        }
+
+        // Encriptar contraseña
+        const encryptedPassword = await helpers.encryptPassword(password);
+
+        // Insertar nuevo usuario
+        const newUser = {
+            username,
+            password: encryptedPassword,
+            id_persona: id,
+            roles
         };
-        await pool.query('INSERT INTO domiciliario SET ?', [newDomiciliario]);
-    }
+        await pool.query('INSERT INTO users SET ?', [newUser]);
 
-    const script = `Swal.fire('Éxito', 'Empleado guardado exitosamente.', 'success');`;
-    res.render('links/empleados', { script });
+        // Insertar nuevo empleado
+        const newEmployee = {
+            nombre_completo,
+            numero_identificacion: id,
+            telefono,
+            roles,
+            username
+        };
+        await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
+
+        // Insertar nuevo domiciliario si corresponde
+        if (roles === 'domiciliario') {
+            const newDomiciliario = {
+                numero_identificacion: id,
+                medio_transporte: tipo_vehiculo,
+                licencia_conduccion: (tipo_vehiculo === 'moto' || tipo_vehiculo === 'carro') ? numero_licencia : null,
+                fecha_fin_licencia: (tipo_vehiculo === 'moto' || tipo_vehiculo === 'carro') ? fecha_vencimiento_licencia : null
+            };
+            await pool.query('INSERT INTO domiciliario SET ?', [newDomiciliario]);
+        }
+
+        const script = `Swal.fire('Éxito', 'Empleado guardado exitosamente.', 'success');`;
+        res.render('links/empleados', { script });
+    } catch (error) {
+        console.error(error);
+        const script = `Swal.fire('Error', 'No se pudo guardar el empleado.', 'error');`;
+        res.render('links/empleados', { script });
+    }
 });
 
 router.get('/domiciliario', isLoggedIn, async (req, res) => {
@@ -413,6 +445,7 @@ router.get('/cocina', isLoggedIn, async (req, res) => {
     }
 });
 
+
 router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
     const { id_compra } = req.body;
 
@@ -424,7 +457,7 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
         if (tipoEntrega === 'domicilio') {
             // Verificar si hay domiciliarios disponibles
             const domiciliarioResult = await pool.query(`
-                SELECT id
+                SELECT id, medio_transporte, fecha_fin_licencia
                 FROM domiciliario
                 WHERE estado = 'Si'
                 ORDER BY horario_disponible ASC
@@ -435,13 +468,19 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
                 return res.json({ success: false, message: 'Domiciliarios no disponibles por el momento.' });
             }
 
-            const id_domiciliario = domiciliarioResult[0].id;
+            const { id: id_domiciliario, medio_transporte, fecha_fin_licencia } = domiciliarioResult[0];
+
+            // Verificar la vigencia de la licencia si el medio de transporte es carro o moto
+            const fechaActualBogota = moment().tz('America/Bogota');
+            if ((medio_transporte === 'carro' || medio_transporte === 'moto') && fechaActualBogota.isAfter(moment(fecha_fin_licencia).tz('America/Bogota'))) {
+                return res.json({ success: false, message: 'No se puede asignar domiciliario porque la licencia ha expirado.' });
+            }
 
             // Marcar el pedido como listo en la cocina
             await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
 
             // Ajustar la fecha y hora a tu zona horaria local
-            const fechaEnvio = moment().tz('America/Bogota');
+            const fechaEnvio = fechaActualBogota;
             const fechaEnvioStr = fechaEnvio.format('YYYY-MM-DD');
             const horaEnvioStr = fechaEnvio.format('HH:mm:ss');
 
@@ -459,7 +498,7 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
             const fechaFinPreparacionStr = fechaFinPreparacion.format('YYYY-MM-DD');
             const horaFinPreparacionStr = fechaFinPreparacion.format('HH:mm:ss');
 
-            await pool.query('INSERT INTO recogida_en_tienda (id_compra, fecha_fin_preparación, hora_fin_preparación, fecha_recogida, hora_recogida) VALUES (?, ?, ?, ?, ?)', 
+            await pool.query('INSERT INTO recogida_en_tienda (id_compra, fecha_fin_preparacion, hora_fin_preparacion, fecha_recogida, hora_recogida) VALUES (?, ?, ?, ?, ?)', 
             [id_compra, fechaFinPreparacionStr, horaFinPreparacionStr, null, null]);
 
             res.json({ success: true, message: 'Pedido marcado como listo para recogida en tienda.' });
@@ -471,6 +510,7 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
         res.json({ success: false, message: 'No se pudo marcar el pedido como listo.' });
     }
 });
+
 
 
 
@@ -690,37 +730,60 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
 
 router.get('/estadisticas', isLoggedIn, async (req, res) => {
     try {
-        const { startDate, endDate } = req.query;
-        let query = `
-            SELECT producto.nombre, SUM(detalle_compra.cantidad) as cantidad 
-            FROM detalle_compra
-            JOIN compras ON detalle_compra.id_compra = compras.id
-            JOIN producto ON detalle_compra.id_producto = producto.id
-        `;
-
+        const { startDate, endDate, viewType } = req.query;
+        let query = '';
         const queryParams = [];
 
-        if (startDate && endDate) {
-            query += ' WHERE compras.fecha_compra BETWEEN ? AND ?';
-            queryParams.push(startDate, endDate);
-        } else if (startDate) {
-            query += ' WHERE compras.fecha_compra >= ?';
-            queryParams.push(startDate);
-        } else if (endDate) {
-            query += ' WHERE compras.fecha_compra <= ?';
-            queryParams.push(endDate);
-        }
+        if (viewType === 'productos') {
+            query = `
+                SELECT producto.nombre, SUM(detalle_compra.cantidad) as cantidad 
+                FROM detalle_compra
+                JOIN compras ON detalle_compra.id_compra = compras.id
+                JOIN producto ON detalle_compra.id_producto = producto.id
+            `;
 
-        query += ' GROUP BY producto.nombre';
+            if (startDate && endDate) {
+                query += ' WHERE compras.fecha_compra BETWEEN ? AND ?';
+                queryParams.push(startDate, endDate);
+            } else if (startDate) {
+                query += ' WHERE compras.fecha_compra >= ?';
+                queryParams.push(startDate);
+            } else if (endDate) {
+                query += ' WHERE compras.fecha_compra <= ?';
+                queryParams.push(endDate);
+            }
+
+            query += ' GROUP BY producto.nombre';
+        } else if (viewType === 'ventas_dias') {
+            query = `
+                SELECT fecha_compra, COUNT(fecha_compra) as pedidos_dia 
+                FROM compras
+            `;
+
+            if (startDate && endDate) {
+                query += ' WHERE fecha_compra BETWEEN ? AND ?';
+                queryParams.push(startDate, endDate);
+            } else if (startDate) {
+                query += ' WHERE fecha_compra >= ?';
+                queryParams.push(startDate);
+            } else if (endDate) {
+                query += ' WHERE fecha_compra <= ?';
+                queryParams.push(endDate);
+            }
+
+            query += ' GROUP BY fecha_compra';
+        }
 
         const result = await pool.query(query, queryParams);
 
-        res.render('links/estadisticas', { data: JSON.stringify(result).replace(/\"/g, '\\"') });
+        res.render('links/estadisticas', { data: JSON.stringify(result).replace(/\"/g, '\\"'), viewType });
     } catch (error) {
         console.error(error);
-        res.render('links/estadisticas', { data: "[]" });
+        res.render('links/estadisticas', { data: "[]", viewType: 'productos' });
     }
 });
+
+
 
 
 

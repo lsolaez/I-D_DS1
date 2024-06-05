@@ -89,7 +89,7 @@ CREATE TABLE domiciliario (
     numero_identificacion varchar(50),
     medio_transporte VARCHAR(50),
     horario_disponible DATETIME default CURRENT_TIMESTAMP,
-    licencia_conduccion INT,
+    licencia_conduccion varchar(255),
     fecha_fin_licencia DATE,
     estado VARCHAR(2) default 'Si',
     FOREIGN KEY (numero_identificacion) REFERENCES empleados(numero_identificacion)

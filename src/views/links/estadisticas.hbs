@@ -7,8 +7,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>Estadísticas de Productos Más Comprados</h1>
+        <h1>Estadísticas de Ventas</h1>
         <form id="dateForm" method="GET" action="/links/estadisticas">
+            <label for="viewType">Tipo de estadística:</label>
+            <select id="viewType" name="viewType">
+                <option value="productos">Mostrar productos vendidos</option>
+                <option value="ventas_dias">Mostrar ventas por días</option>
+            </select>
             <label for="startDate">Fecha de inicio:</label>
             <input type="date" id="startDate" name="startDate">
             <label for="endDate">Fecha final:</label>
@@ -24,36 +29,34 @@
             const data = JSON.parse(`{{{data}}}`);
             console.log(data); // Para verificar los datos en la consola del navegador
 
-            const labels = data.map(item => item.nombre);
-            const cantidades = data.map(item => item.cantidad);
+            const viewType = '{{viewType}}';
+            let labels, cantidades;
 
-            // Definir una gama de colores cálidos diferentes
+            if (viewType === 'productos') {
+                labels = data.map(item => item.nombre);
+                cantidades = data.map(item => item.cantidad);
+            } else if (viewType === 'ventas_dias') {
+                labels = data.map(item => new Date(item.fecha_compra).toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }));
+                cantidades = data.map(item => item.pedidos_dia);
+            }
+
             const warmColors = [
-                'rgba(255, 99, 132, 0.2)', // Rojo claro
-                'rgba(255, 159, 64, 0.2)', // Naranja
-                'rgba(255, 205, 86, 0.2)', // Amarillo
-                'rgba(255, 140, 0, 0.2)', // Naranja oscuro
-                'rgba(255, 99, 71, 0.2)', // Tomate
-                'rgba(255, 69, 0, 0.2)', // Rojo oscuro
-                'rgba(255, 165, 0, 0.2)', // Naranja más claro
-                'rgba(255, 182, 193, 0.2)', // Rosado claro
-                'rgba(255, 228, 181, 0.2)', // Mocca claro
-                'rgba(255, 160, 122, 0.2)'  // Salmón claro
+                'rgba(255, 99, 132, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(255, 205, 86, 0.2)',
+                'rgba(255, 140, 0, 0.2)', 'rgba(255, 99, 71, 0.2)', 'rgba(255, 69, 0, 0.2)',
+                'rgba(255, 165, 0, 0.2)', 'rgba(255, 182, 193, 0.2)', 'rgba(255, 228, 181, 0.2)',
+                'rgba(255, 160, 122, 0.2)'
             ];
             const warmBorderColors = [
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 159, 64, 1)',
-                'rgba(255, 205, 86, 1)',
-                'rgba(255, 140, 0, 1)',
-                'rgba(255, 99, 71, 1)',
-                'rgba(255, 69, 0, 1)',
-                'rgba(255, 165, 0, 1)',
-                'rgba(255, 182, 193, 1)',
-                'rgba(255, 228, 181, 1)',
+                'rgba(255, 99, 132, 1)', 'rgba(255, 159, 64, 1)', 'rgba(255, 205, 86, 1)',
+                'rgba(255, 140, 0, 1)', 'rgba(255, 99, 71, 1)', 'rgba(255, 69, 0, 1)',
+                'rgba(255, 165, 0, 1)', 'rgba(255, 182, 193, 1)', 'rgba(255, 228, 181, 1)',
                 'rgba(255, 160, 122, 1)'
             ];
 
-            // Asignar colores a cada barra
             const backgroundColors = cantidades.map((_, index) => warmColors[index % warmColors.length]);
             const borderColors = cantidades.map((_, index) => warmBorderColors[index % warmBorderColors.length]);
 
@@ -62,7 +65,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Cantidad Comprada',
+                        label: viewType === 'productos' ? 'Cantidad Comprada' : 'Pedidos por Día',
                         data: cantidades,
                         backgroundColor: backgroundColors,
                         borderColor: borderColors,
