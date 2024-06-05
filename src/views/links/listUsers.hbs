@@ -1,45 +1,127 @@
-<div class="progressBarIncomplete">	
-        <div class="wrapper">	
-            <div class="arrow-steps clearfix">
-                {{#if cart}}
-                    <div class="step done" name="step1"> <span>Selecciona un producto</span> </div>
-                    <div class="step current" name="step2"> <span>Abre tu carrito</span> </div>
-                {{else}} 
-                    <div class="step current" name="step1"> <span>Selecciona un producto</span> </div>  
-                    <div class="step" name="step2"> <span>Abre tu carrito</span> </div>
-                {{/if}}
-                    
-                    <div class="step" name="step3"> <span> Elige tipo de entrega</span> </div>
-                    <div class="step" name="step5"> <span>Confirma tu pedido!</span> </div>
-            </div>
-        </div>
-</div>
+ 
+ <style>
+    body {
+    font-family: Arial, sans-serif;
+}
 
-<div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
-    <div class="row">
-        {{#each productos}}
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
-                    <p class="m-2">{{descripcion}}</p>
-                    <p class="m-2">Precio: {{precio}}</p>
-                    <p class="m-2">Categoria: {{categoria}}</p>
-                    <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
-                    <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
-                </div>
-            </div>
+.progressBarIncomplete {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.arrow-steps {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.arrow-steps .step {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 10px 20px;
+    background: #d9d9d9;
+    color: #333;
+    text-align: center;
+    text-transform: uppercase;
+    transition: background 0.3s ease-in-out;
+    margin-right: 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.arrow-steps .step.current {
+    background: #dc3545;;
+    color: white;
+}
+
+.arrow-steps .step.done {
+    background: #28a745;
+    color: white;
+}
+
+.arrow-steps .step:last-child {
+    margin-right: 0;
+}
+
+.arrow-steps .step::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -20px;
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 20px solid #d9d9d9;
+    z-index: 2;
+}
+
+.arrow-steps .step.current::after {
+    border-left-color: #dc3545;;
+}
+
+.arrow-steps .step.done::after {
+    border-left-color: #28a745;
+}
+
+.arrow-steps .step:last-child::after {
+    display: none;
+}
+ </style>
+ <div class="progressBarIncomplete">  
+    <div class="wrapper">  
+        <div class="arrow-steps clearfix">
+            {{#if cart}}
+                <div class="step done" name="step1"> <span>Selecciona un producto</span> </div>
+                <div class="step current" name="step2"> <span>Abre tu carrito</span> </div>
+            {{else}} 
+                <div class="step current" name="step1"> <span>Selecciona un producto</span> </div>  
+                <div class="step" name="step2"> <span>Abre tu carrito</span> </div>
+            {{/if}}
+            <div class="step" name="step3"> <span>Elige tipo de entrega</span> </div>
+            <div class="step" name="step5"> <span>Confirma tu pedido!</span> </div>
         </div>
-        {{else}}
-        <div class="col-md-4 mx-auto">
-            <div class="card card-body text-center">
-                <p>No hay productos guardados todavía.</p>
-                <a href="/links/add" class="btn btn-primary">Crear uno!</a>
-            </div>
-        </div>
-        {{/each}}
     </div>
 </div>
+    <div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
+        <div class="row">
+            {{#each productos}}
+            <div class="col-md-3 mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
+                <div class="card text-center">
+                    <div class="card-body">
+                        <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
+                        <p class="m-2">{{descripcion}}</p>
+                        <p class="m-2">Precio: {{precio}}</p>
+                        <p class="m-2">Categoria: {{categoria}}</p>
+                        <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
+                        <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
+                    </div>
+                </div>
+            </div>
+            {{else}}
+            <div class="col-md-4 mx-auto mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
+                <div class="card card-body text-center">
+                    <p>No hay productos guardados todavía.</p>
+                    <a href="/links/add" class="btn btn-primary">Crear uno!</a>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <!-- Botón para agregar un nuevo producto-->
+    
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
