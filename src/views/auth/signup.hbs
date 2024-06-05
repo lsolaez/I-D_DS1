@@ -1,114 +1,48 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Sign Up</title>
-</head>
-<body>
-    <div class="container p-4">
-        <div class="row">
-            <div class="col-md-4 mx-auto">
-                <div class="card text-center">
-                    <div class="card-header">
-                        <h3>SignUp</h3>
-                    </div>
-                    <div class="card-body">
-                        {{#if message}}
-                        <script>
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: '{{message}}'
-                            });
-                        </script>
-                        {{/if}}
-                        <form id="signupForm" action="/signup" method="POST">
-                            <div class="form-group">
-                                <input type="text" name="username" placeholder="Username" class="form-control" autofocus>
-                                <div class="invalid-feedback" id="usernameError"></div>
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <input type="password" name="password" placeholder="Password" class="form-control">
-                                <div class="invalid-feedback" id="passwordError"></div>
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <input type="text" name="nombre_completo" placeholder="Nombre completo" class="form-control">
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <input type="text" name="telefono" placeholder="telefono" class="form-control">
-                                <div class="invalid-feedback" id="telefonoError"></div>
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <input type="text" name="id_cliente" placeholder="identificacion" class="form-control">
-                                <div class="invalid-feedback" id="idClienteError"></div>
-                            </div>
-                            <br>
-                            <div class="form-group d-grid gap-2">
-                                <button class="btn btn-success btn-block" type="submit">
-                                    SignUp
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+<div class="container p-4">
+
+  <div class="row">
+
+    <div class="col-md-4 mx-auto">
+
+      <div class="card text-center">
+
+        <div class="card-header">
+          <h3>SignUp</h3>
         </div>
+
+        <div class="card-body">
+
+          <form action="/signup" method="POST">
+            <div class="form-group">
+              <input type="text" name="username" placeholder="Username" class="form-control" autofocus>
+            </div>
+            <br>
+            <div class="form-group">
+              <input type="password" name="password" placeholder="Password" class="form-control">
+            </div>
+            <br>
+            <div class="form-group">
+              <input type="text" name="nombre_completo" placeholder="Nombre completo" class="form-control">
+            </div>
+            <br>
+            <div class="form-group">
+              <input type="text" name="telefono" placeholder="telefono" class="form-control">
+            </div>
+            <br>
+            <div class="form-group">
+              <input type="text" name="id_cliente" placeholder="identificacion" class="form-control">
+            </div>
+            <br>
+            <div class="form-group d-grid gap-2">
+              <button class="btn btn-success btn-block">
+                SingUp
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
     </div>
-
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            const errors = validateForm(formData);
-
-            if (Object.keys(errors).length > 0) {
-                displayErrors(errors);
-            } else {
-                form.submit();
-            }
-        });
-
-        function validateForm(formData) {
-            const errors = {};
-            const username = formData.get('username');
-            const password = formData.get('password');
-            const telefono = formData.get('telefono');
-            const id_cliente = formData.get('id_cliente');
-
-            if (!username || username.length < 5) {
-                errors.username = 'Username must be at least 5 characters long';
-            }
-            if (!password || password.length < 6) {
-                errors.password = 'Password must be at least 6 characters long';
-            }
-            if (!telefono || telefono.length !== 10) {
-                errors.telefono = 'Phone number must be 10 digits long';
-            }
-            if (!id_cliente || id_cliente.length !== 10) {
-                errors.id_cliente = 'ID must be 10 digits long';
-            }
-
-            return errors;
-        }
-
-        function displayErrors(errors) {
-            Object.keys(errors).forEach(key => {
-                const errorElement = document.getElementById(`${key}Error`);
-                errorElement.textContent = errors[key];
-                errorElement.style.display = 'block';
-            });
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                html: `<ul>${Object.values(errors).map(error => `<li>${error}</li>`).join('')}</ul>`,
-            });
-        }
-    </script>
-</body>
-</html>
+  </div>
+</div>
