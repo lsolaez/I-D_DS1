@@ -22,6 +22,7 @@ router.post('/signup', [
             return next(err);
         }
         if (!user) {
+            req.flash('message', info.message);
             return res.redirect('/signup');
         }
         req.logIn(user, async (err) => {
@@ -40,6 +41,7 @@ router.post('/signup', [
         });
     })(req, res, next);
 });
+
 
 router.get('/signin', (req, res) => {
     res.render('auth/signin');

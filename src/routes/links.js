@@ -534,7 +534,7 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
             pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
             domicilios.fecha_envio, domicilios.fecha_entrega,
-            recogida_en_tienda.fecha_fin_preparación, recogida_en_tienda.hora_fin_preparación,
+            recogida_en_tienda.fecha_fin_preparacion, recogida_en_tienda.hora_fin_preparacion,
             recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
             cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono, 
             direcciones.direccionCliente as direccion
@@ -672,7 +672,7 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
             pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
             domicilios.fecha_envio, domicilios.fecha_entrega,
-            recogida_en_tienda.fecha_fin_preparación, recogida_en_tienda.hora_fin_preparación,
+            recogida_en_tienda.fecha_fin_preparacion, recogida_en_tienda.hora_fin_preparacion,
             recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
             cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono, 
             direcciones.direccionCliente as direccion

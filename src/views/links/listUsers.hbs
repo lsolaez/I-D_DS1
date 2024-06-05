@@ -1,6 +1,4 @@
- 
- <style>
-
+<style>
 .progressBarIncomplete {
     width: 100%;
     display: flex;
@@ -75,15 +73,15 @@
 .arrow-steps .step:last-child::after {
     display: none;
 }
- </style>
- <div class="progressBarIncomplete">  
-    <div class="wrapper">  
+</style>
+<div class="progressBarIncomplete">
+    <div class="wrapper">
         <div class="arrow-steps clearfix">
             {{#if cart}}
                 <div class="step done" name="step1"> <span>Selecciona un producto</span> </div>
                 <div class="step current" name="step2"> <span>Abre tu carrito</span> </div>
-            {{else}} 
-                <div class="step current" name="step1"> <span>Selecciona un producto</span> </div>  
+            {{else}}
+                <div class="step current" name="step1"> <span>Selecciona un producto</span> </div>
                 <div class="step" name="step2"> <span>Abre tu carrito</span> </div>
             {{/if}}
             <div class="step" name="step3"> <span>Elige tipo de entrega</span> </div>
@@ -91,34 +89,33 @@
         </div>
     </div>
 </div>
-    <div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
-        <div class="row">
-            {{#each productos}}
-            <div class="col-md-3 mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
-                <div class="card text-center">
-                    <div class="card-body">
-                        <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
-                        <p class="m-2">{{descripcion}}</p>
-                        <p class="m-2">Precio: {{precio}}</p>
-                        <p class="m-2">Categoria: {{categoria}}</p>
-                        <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
-                        <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
-                    </div>
+<div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
+    <div class="row">
+        {{#each productos}}
+        <div class="col-md-3 mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
+            <div class="card text-center">
+                <div class="card-body">
+                    <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
+                    <p class="m-2">{{descripcion}}</p>
+                    <p class="m-2">Precio: {{precio}}</p>
+                    <p class="m-2">Categoria: {{categoria}}</p>
+                    <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
+                    {{#ifCond confirmaciondedisponibilidad '==' 'Disponible'}}
+                    <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
+                    {{/ifCond}}
                 </div>
             </div>
-            {{else}}
-            <div class="col-md-4 mx-auto mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
-                <div class="card card-body text-center">
-                    <p>No hay productos guardados todavía.</p>
-                    <a href="/links/add" class="btn btn-primary">Crear uno!</a>
-                </div>
-            </div>
-            {{/each}}
         </div>
+        {{else}}
+        <div class="col-md-4 mx-auto mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
+            <div class="card card-body text-center">
+                <p>No hay productos guardados todavía.</p>
+                <a href="/links/add" class="btn btn-primary">Crear uno!</a>
+            </div>
+        </div>
+        {{/each}}
     </div>
-
-    <!-- Botón para agregar un nuevo producto-->
-    
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -158,3 +155,4 @@ $(document).ready(function() {
     });
 });
 </script>
+
