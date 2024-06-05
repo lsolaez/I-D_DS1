@@ -17,7 +17,7 @@ ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'coc
 ALTER TABLE users AUTO_INCREMENT = 1; 
 
 CREATE TABLE cliente (
-    id varchar(20) PRIMARY KEY,
+    id int PRIMARY KEY,
     nombre_completo VARCHAR(50),
     telefono varchar(10),
     FOREIGN KEY (id) REFERENCES users(id)
@@ -27,7 +27,7 @@ CREATE TABLE cliente (
 CREATE TABLE direcciones (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     direccionCliente VARCHAR(100),
-    id_cliente varchar(20),
+    id_cliente int,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id)
 );
 ALTER TABLE direcciones AUTO_INCREMENT = 1; 
@@ -46,7 +46,7 @@ CREATE TABLE producto (
 -- Tabla 'compras'
 CREATE TABLE compras (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_cliente varchar(20),
+    id_cliente int,
     fecha_compra DATE,
     hora_compra TIME,
     total DECIMAL(10,2),
@@ -100,7 +100,7 @@ CREATE TABLE domiciliario (
 CREATE TABLE decide_recoger_producto (
     id INT PRIMARY KEY,
     direccion_tienda_unica VARCHAR(100),
-    id_cliente varchar(20),
+    id_cliente int,
     fecha_asignada_recoger DATE,
     hora_asignada_recoger TIME,
     id_producto INT,
@@ -125,8 +125,8 @@ ALTER TABLE domicilios  AUTO_INCREMENT = 1;
 CREATE TABLE recogida_en_tienda (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_compra INT NOT NULL,
-    fecha_fin_preparación DATE,
-    hora_fin_preparación TIME,
+    fecha_fin_preparacion DATE,
+    hora_fin_preparacion TIME,
     fecha_recogida DATE,
     hora_recogida TIME,
     FOREIGN KEY (id_compra) REFERENCES compras(id)

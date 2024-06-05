@@ -455,32 +455,36 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
         const tipoEntrega = tipoEntregaResult[0].Tipo_entrega;
 
         if (tipoEntrega === 'domicilio') {
+            // Obtener la fecha actual en la zona horaria de Bogotá
+            const fechaActualBogota = moment().tz('America/Bogota').format('YYYY-MM-DD');
+
             // Verificar si hay domiciliarios disponibles
             const domiciliarioResult = await pool.query(`
                 SELECT id, medio_transporte, fecha_fin_licencia
                 FROM domiciliario
                 WHERE estado = 'Si'
                 ORDER BY horario_disponible ASC
-                LIMIT 1
             `);
 
-            if (domiciliarioResult.length === 0) {
+            // Filtrar los domiciliarios que tienen licencia válida o que no requieren licencia
+            const domiciliarioDisponible = domiciliarioResult.find(domiciliario => {
+                if (domiciliario.medio_transporte === 'carro' || domiciliario.medio_transporte === 'moto') {
+                    return moment(domiciliario.fecha_fin_licencia).isSameOrAfter(fechaActualBogota);
+                }
+                return true; // Para bicicletas u otros medios que no requieren licencia
+            });
+
+            if (!domiciliarioDisponible) {
                 return res.json({ success: false, message: 'Domiciliarios no disponibles por el momento.' });
             }
 
-            const { id: id_domiciliario, medio_transporte, fecha_fin_licencia } = domiciliarioResult[0];
-
-            // Verificar la vigencia de la licencia si el medio de transporte es carro o moto
-            const fechaActualBogota = moment().tz('America/Bogota');
-            if ((medio_transporte === 'carro' || medio_transporte === 'moto') && fechaActualBogota.isAfter(moment(fecha_fin_licencia).tz('America/Bogota'))) {
-                return res.json({ success: false, message: 'No se puede asignar domiciliario porque la licencia ha expirado.' });
-            }
+            const { id: id_domiciliario } = domiciliarioDisponible;
 
             // Marcar el pedido como listo en la cocina
             await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
 
             // Ajustar la fecha y hora a tu zona horaria local
-            const fechaEnvio = fechaActualBogota;
+            const fechaEnvio = moment().tz('America/Bogota');
             const fechaEnvioStr = fechaEnvio.format('YYYY-MM-DD');
             const horaEnvioStr = fechaEnvio.format('HH:mm:ss');
 
@@ -528,10 +532,18 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
         // Obtener todas las compras del cliente
         const comprasResult = await pool.query(`
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
-            pedidos_cocina.estado as estado_cocina, domicilios.fecha_envio, domicilios.fecha_entrega
+            pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
+            domicilios.fecha_envio, domicilios.fecha_entrega,
+            recogida_en_tienda.fecha_fin_preparación, recogida_en_tienda.hora_fin_preparación,
+            recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
+            cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono, 
+            direcciones.direccionCliente as direccion
             FROM compras
             LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
             LEFT JOIN domicilios ON compras.id = domicilios.id_compra
+            LEFT JOIN recogida_en_tienda ON compras.id = recogida_en_tienda.id_compra
+            LEFT JOIN cliente ON compras.id_cliente = cliente.id
+            LEFT JOIN direcciones ON cliente.id = direcciones.id_cliente
             WHERE compras.id_cliente = ?
             ORDER BY compras.fecha_compra DESC, compras.hora_compra DESC
         `, [id_cliente]);
@@ -554,7 +566,7 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
                 estado_preparado = true;
             }
 
-            if (compra.fecha_entrega) {
+            if (compra.fecha_entrega || compra.fecha_recogida) {
                 estado_entregado = true;
                 estado_enviado = true;
                 estado_preparado = true;
@@ -564,7 +576,8 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
                 estado_preparado = true;
                 estado_recibido = true;
             }
-                        // Formatear la fecha de compra
+
+            // Formatear la fecha de compra
             const fecha_compra = new Date(compra.fecha_compra).toLocaleDateString('es-CO', {
                 year: 'numeric',
                 month: '2-digit',
@@ -578,6 +591,7 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
                 JOIN producto ON detalle_compra.id_producto = producto.id
                 WHERE detalle_compra.id_compra = ?
             `, [compra.id]);
+
             return {
                 id: compra.id,
                 estado_recibido,
@@ -587,7 +601,10 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
                 fecha_compra,
                 hora_compra: compra.hora_compra,
                 total: compra.total,
-                productos: productosResult
+                productos: productosResult,
+                nombre_cliente: compra.nombre_cliente,
+                telefono: compra.telefono,
+                direccion: compra.direccion
             };
         }));
 
@@ -597,6 +614,7 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
         res.render('links/consultarPedido', { pedidos: [], message: 'Error al obtener el estado de los pedidos.' });
     }
 });
+
 
 
 
@@ -656,12 +674,14 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
             domicilios.fecha_envio, domicilios.fecha_entrega,
             recogida_en_tienda.fecha_fin_preparación, recogida_en_tienda.hora_fin_preparación,
             recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
-            cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono
+            cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono, 
+            direcciones.direccionCliente as direccion
             FROM compras
             LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
             LEFT JOIN domicilios ON compras.id = domicilios.id_compra
             LEFT JOIN recogida_en_tienda ON compras.id = recogida_en_tienda.id_compra
             LEFT JOIN cliente ON compras.id_cliente = cliente.id
+            join direcciones on cliente.id = direcciones.id_cliente
             ORDER BY compras.fecha_compra DESC, compras.hora_compra DESC
         `);
 
@@ -716,7 +736,7 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
                 total: compra.total,
                 productos: productosResult,
                 nombre_cliente: compra.nombre_cliente,
-                telefono: compra.telefono
+                direccion: compra.direccion
             };
         }));
 
@@ -783,7 +803,17 @@ router.get('/estadisticas', isLoggedIn, async (req, res) => {
     }
 });
 
+router.post('/renovar-licencia', isLoggedIn, async (req, res) => {
+    const { numero_identificacion, nueva_fecha_vencimiento } = req.body;
 
+    try {
+        await pool.query('UPDATE domiciliario SET fecha_fin_licencia = ? WHERE numero_identificacion = ?', [nueva_fecha_vencimiento, numero_identificacion]);
+        res.json({ success: true, message: 'Licencia renovada exitosamente.' });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, message: 'No se pudo renovar la licencia.' });
+    }
+});
 
 
 
