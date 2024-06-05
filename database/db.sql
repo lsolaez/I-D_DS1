@@ -7,7 +7,7 @@ CREATE TABLE users (
     id INT(11) NOT NULL AUTO_INCREMENT,
     username varchar(50) NOT NULL,
     password varchar(60) NOT NULL,
-    id_persona INT,
+    id_persona varchar(20),
     cart json,
     PRIMARY KEY (id),
     unique(username)
@@ -17,7 +17,7 @@ ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'coc
 ALTER TABLE users AUTO_INCREMENT = 1; 
 
 CREATE TABLE cliente (
-    id INT PRIMARY KEY,
+    id varchar(20) PRIMARY KEY,
     nombre_completo VARCHAR(50),
     telefono varchar(10),
     FOREIGN KEY (id) REFERENCES users(id)
@@ -27,7 +27,7 @@ CREATE TABLE cliente (
 CREATE TABLE direcciones (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     direccionCliente VARCHAR(100),
-    id_cliente INT,
+    id_cliente varchar(20),
     FOREIGN KEY (id_cliente) REFERENCES cliente(id)
 );
 ALTER TABLE direcciones AUTO_INCREMENT = 1; 
@@ -46,7 +46,7 @@ CREATE TABLE producto (
 -- Tabla 'compras'
 CREATE TABLE compras (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_cliente INT,
+    id_cliente varchar(20),
     fecha_compra DATE,
     hora_compra TIME,
     total DECIMAL(10,2),
@@ -100,7 +100,7 @@ CREATE TABLE domiciliario (
 CREATE TABLE decide_recoger_producto (
     id INT PRIMARY KEY,
     direccion_tienda_unica VARCHAR(100),
-    id_cliente INT,
+    id_cliente varchar(20),
     fecha_asignada_recoger DATE,
     hora_asignada_recoger TIME,
     id_producto INT,
