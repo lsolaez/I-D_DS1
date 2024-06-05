@@ -1,73 +1,260 @@
-<div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
-    <div class="row">
-        {{#each productos}}
-        <div class="col-md-3 mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
-                    <p class="m-2">{{descripcion}}</p>
-                    <p class="m-2">Precio: {{precio}}</p>
-                    <p class="m-2">Categoria: {{categoria}}</p>
-                    <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
-                    <a class="btn btn-danger" href="/links/delete/{{id}}">
-                        Delete Link
-                    </a>
-                    <a class="btn btn-secondary" href="/links/edit/{{id}}">
-                        Edit
-                    </a>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista del Administrador</title>
+
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #f5f5f5;
+        }
+
+        .container-custom {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            overflow-y: auto;
+            height: calc(100% - 60px);
+        }
+
+        h1,
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-body img {
+            border-radius: 50%;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .product-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .product-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .product-list li i {
+            margin-right: 10px;
+        }
+
+        .product-item {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .product-quantity {
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+
+        .cart {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .cart .card {
+            margin-bottom: 20px;
+        }
+
+        .container-custom .card {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .container-custom .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .container-custom .card-body {
+            padding: 20px;
+        }
+
+        .container-custom .card-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .container-custom .card-text {
+            font-size: 1em;
+            color: #555;
+        }
+
+        .container-custom .btn-success {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-custom p-4">
+        <h1>ADMIN</h1>
+        <div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
+            <div class="row">
+                {{#each productos}}
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
+                            <p class="m-2">{{descripcion}}</p>
+                            <p class="m-2">Precio: {{precio}}</p>
+                            <p class="m-2">Categoria: {{categoria}}</p>
+                            <p class="m-2">Disponible: {{confirmaciondedisponibilidad}}</p>
+                            <a class="btn btn-danger" href="/links/delete/{{id}}">Delete Link</a>
+                            <a class="btn btn-secondary" href="/links/edit/{{id}}">Edit</a>
+                        </div>
+                    </div>
+                </div>
+                {{else}}
+                <div class="col-md-4 mx-auto mb-3">
+                    <div class="card card-body text-center">
+                        <p>No hay productos guardados todavía.</p>
+                        <a href="/links/add" class="btn btn-primary">Crear uno!</a>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones adicionales -->
+    <div style="position: fixed; bottom: 20px; right: 20px;">
+        <a href="/links/add" class="btn btn-success">Agregar producto nuevo</a>
+    </div>
+    <div style="position: fixed; bottom: 20px; right: 190px;">
+        <a href="/links/empleado" class="btn btn-success">Agregar empleado</a>
+    </div>
+    <div style="position: fixed; bottom: 20px; right: 330px;">
+        <button id="renovar-licencia-btn" class="btn btn-success">Renovar licencia del domiciliario</button>
+    </div>
+
+    <!-- Modal para renovar licencia -->
+    <div class="modal fade" id="renovarLicenciaModal" tabindex="-1" role="dialog" aria-labelledby="renovarLicenciaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="renovarLicenciaModalLabel">Renovar Licencia del Domiciliario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="renovarLicenciaForm">
+                        <div class="form-group">
+                            <label for="numeroIdentificacion">Número de Identificación del Domiciliario</label>
+                            <input type="text" class="form-control" id="numeroIdentificacion" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nuevaFechaVencimiento">Nueva Fecha de Vencimiento</label>
+                            <input type="date" class="form-control" id="nuevaFechaVencimiento" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </form>
                 </div>
             </div>
         </div>
-        {{else}}
-        <div class="col-md-4 mx-auto mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
-            <div class="card card-body text-center">
-                <p>No hay productos guardados todavía.</p>
-                <a href="/links/add" class="btn btn-primary">Crear uno!</a>
-            </div>
-        </div>
-        {{/each}}
     </div>
-</div>
 
-<!-- Botón para agregar un nuevo producto-->
-<div style="position: fixed; bottom: 20px; right: 20px;">
-    <a href="/links/add" class="btn btn-success">Agregar producto nuevo</a>
-</div>
-<div style="position: fixed; bottom: 20px; right: 190px;">
-    <a href="/links/empleado" class="btn btn-success">Agregar empleado</a>
-</div>
+    <!-- Incluir jQuery, Bootstrap JS y SweetAlert2 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#renovar-licencia-btn').click(function () {
+                $('#renovarLicenciaModal').modal('show');
+            });
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-$(document).ready(function() {
-    $('.add-to-cart-btn').click(function(e) {
-        e.preventDefault(); // Evitar el envío del formulario de manera tradicional
-        var codigo = $(this).data('codigo');
-        $.post('/links/cart/add/' + codigo, function(data) {
-            if (data.success) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: data.message,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
+            $('#renovarLicenciaForm').submit(function (event) {
+                event.preventDefault();
+                var numeroIdentificacion = $('#numeroIdentificacion').val();
+                var nuevaFechaVencimiento = $('#nuevaFechaVencimiento').val();
+
+                $.post('/links/renovar-licencia', {
+                    numero_identificacion: numeroIdentificacion,
+                    nueva_fecha_vencimiento: nuevaFechaVencimiento
+                }, function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            $('#renovarLicenciaModal').modal('hide');
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }).fail(function () {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred, please try again later.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 });
-            } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: data.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        }).fail(function() {
-            Swal.fire({
-                title: 'Error!',
-                text: 'An error occurred, please try again later.',
-                icon: 'error',
-                confirmButtonText: 'OK'
             });
         });
-    });
-});
-</script>
+    </script>
+</body>
+
+</html>

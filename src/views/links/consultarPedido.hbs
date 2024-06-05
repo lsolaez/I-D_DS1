@@ -113,6 +113,8 @@
             <h2>Pedido ID: {{this.id}}</h2>
             <p>Fecha de Compra: {{this.fecha_compra}}</p>
             <p>Hora de Compra: {{this.hora_compra}}</p>
+            <p>Nombre: {{this.nombre_cliente}}</p>
+            <p>telefono: {{this.telefono}}</p>
             <p>Total: {{this.total}}</p>
             <div class="estado-container">
                 <div
@@ -127,6 +129,7 @@
                 <div class="estado {{#if this.estado_entregado}}verde{{else}}rojo{{/if}}" style="left: 75%;">4</div>
                 <div class="estado-label" style="left: 79%;">Entregado</div>
             </div>
+            <br>
             <div class="productos-container">
                 <br>
                 <h3>Productos:</h3>

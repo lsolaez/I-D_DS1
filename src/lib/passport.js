@@ -17,14 +17,21 @@ passport.use('local.signup', new LocalStrategy({
     };
 
     try {
+        // Verificar si el nombre de usuario o la identificación ya existen
+        const existingUserResult = await pool.query('SELECT * FROM users WHERE username = ? OR id_persona = ?', [username, id_cliente]);
+        if (existingUserResult.length > 0) {
+            return done(null, false, { message: 'Username or ID already exists' });
+        }
+
         // Insertar en la tabla users
         const result = await pool.query('INSERT INTO users SET ?', [newUser]);
-        const id_usuario = await pool.query ('SELECT id from users where id_persona=?', [id_cliente]);
+        const id_usuario = result.insertId; // Obtener el ID insertado
+
         // Insertar en la tabla clientes
         const newClient = {
-            id: id_usuario[0].id,
+            id: id_usuario,
             nombre_completo,
-            telefono,
+            telefono
         };
         await pool.query('INSERT INTO cliente SET ?', [newClient]);
 
