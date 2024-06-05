@@ -12,34 +12,58 @@ router.get('/signup', (req, res) => {
 router.post('/signup', [
     body('username').notEmpty().isLength({ min: 5 }).withMessage('Username must be at least 5 characters long'),
     body('password').notEmpty().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-], (req, res, next) => {
+    body('telefono').isLength({ min: 10, max: 10 }).withMessage('Phone number must be 10 digits long'),
+    body('id_cliente').isLength({ min: 10, max: 10 }).withMessage('ID must be 10 digits long')
+], async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        const errorMessages = errors.array().map(err => err.msg);
+        req.flash('message', errorMessages.join(' '));
+        return res.redirect('/signup');
     }
-    passport.authenticate('local.signup', (err, user, info) => {
-        if (err) {
-            return next(err);
-        }
-        if (!user) {
+
+    const { username, id_cliente } = req.body;
+
+    try {
+        // Verificar si el nombre de usuario o la identificación ya existen
+        const [existingUser] = await pool.query('SELECT * FROM users WHERE username = ? OR id_cliente = ?', [username, id_cliente]);
+
+        if (existingUser.length > 0) {
+            req.flash('message', 'Username or ID already exists');
             return res.redirect('/signup');
         }
-        req.logIn(user, async (err) => {
+
+        // Continuar con el registro del usuario
+        passport.authenticate('local.signup', (err, user, info) => {
             if (err) {
                 return next(err);
             }
-            const userCart = user.cart ? JSON.parse(user.cart) : [];
-            req.session.cart = userCart;
-            if (user.roles === 'admin') {
-                return res.redirect('/links');
-            } else if (user.roles === 'usuario') {
-                return res.redirect('/links/listUsers');
-            } else {
-                return res.redirect('/profile');
+            if (!user) {
+                req.flash('message', 'Registration failed');
+                return res.redirect('/signup');
             }
-        });
-    })(req, res, next);
+            req.logIn(user, async (err) => {
+                if (err) {
+                    return next(err);
+                }
+                const userCart = user.cart ? JSON.parse(user.cart) : [];
+                req.session.cart = userCart;
+                if (user.roles === 'admin') {
+                    return res.redirect('/links');
+                } else if (user.roles === 'usuario') {
+                    return res.redirect('/links/listUsers');
+                } else {
+                    return res.redirect('/profile');
+                }
+            });
+        })(req, res, next);
+    } catch (error) {
+        console.error(error);
+        req.flash('message', 'An error occurred during registration');
+        res.redirect('/signup');
+    }
 });
+
 
 router.get('/signin', (req, res) => {
     res.render('auth/signin');
