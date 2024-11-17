@@ -24,14 +24,21 @@
                             placeholder="Precio">
                     </div>
                     <br>
-                    <div class="form-group">
-                        <input type="text" value="{{productos.categoria}}" name="categoria" class="form-control"
-                            placeholder="Categoria">
+                    <div class="col-md-4">
+                        <select name="categoria"  class="form-select">
+                            <option value="{{productos.categoria}}">{{productos.categoria}}</option>
+                            <option value="antibioticos">Antibióticos</option>
+                            <option value="analgesicos">Analgésicos y Antiinflamatorios</option>
+                            <option value="antigripales">Antigripales y Resfriados</option>
+                            <option value="antihipertensivos">Antihipertensivos</option>
+                            <option value="antidiabeticos">Antidiabéticos</option>
+                            <option value="vitaminas">Vitaminas y Suplementos</option>
+                        </select>
                     </div>
                     <br>
                     <div class="form-group">
-                        <input type="text" value="{{productos.confirmaciondedisponibilidad}}" name="confirmaciondedisponibilidad"
-                            class="form-control" placeholder="Disponible">
+                        <input type="text" value="{{productos.stock}}" name="stock" class="form-control"
+                            placeholder="stock">
                     </div>
                     <br>
                     <div class="form-group">

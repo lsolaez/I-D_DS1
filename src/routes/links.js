@@ -72,8 +72,8 @@ router.get('/edit/:id', isLoggedIn, async (req, res) => {
 
 router.post('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    const { urlimagen, nombre, descripcion, precio, categoria, confirmaciondedisponibilidad } = req.body;
-    const updatedProduct = { urlimagen, nombre, descripcion, precio, categoria, confirmaciondedisponibilidad };
+    const { urlimagen, nombre, descripcion, precio, categoria, stock } = req.body;
+    const updatedProduct = { urlimagen, nombre, descripcion, precio, categoria, stock };
     await pool.query('UPDATE producto SET ? WHERE id = ?', [updatedProduct, id]);
     req.flash('success', 'Product Updated Successfully');
     res.redirect('/links');
@@ -108,7 +108,8 @@ router.post('/cart/add/:id', isLoggedIn, async (req, res) => {
             req.session.cart = [];
         }
 
-        const cartIndex = req.session.cart.findIndex(p => p.id === id);
+        // Convertimos los tipos a número para evitar problemas de comparación
+        const cartIndex = req.session.cart.findIndex(p => p.id === Number(id));
         if (cartIndex > -1) {
             req.session.cart[cartIndex].cantidad++;
         } else {
@@ -188,7 +189,7 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
 
     const { id: id_usuario } = user;
     const { deliveryOption, direccionId, nombre_completo, telefono } = req.body;
-    console.log(nombre_completo, telefono)
+    console.log(nombre_completo, telefono);
     if (!req.session.cart || req.session.cart.length === 0) {
         return res.json({ success: false, message: 'El carrito está vacío.' });
     }
@@ -211,19 +212,29 @@ router.post('/cart/checkout', isLoggedIn, async (req, res) => {
         const id_compra = result.insertId;
 
         for (const item of req.session.cart) {
+            // Insertar en detalle_compra
             await pool.query('INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', [id_compra, item.id, item.cantidad, item.precio]);
+
+            // Actualizar el stock del producto
+            await pool.query('UPDATE producto SET stock = stock - ? WHERE id = ? AND stock >= ?', [item.cantidad, item.id, item.cantidad]);
+
+            // Verificar si el stock quedó negativo
+            const stockResult = await pool.query('SELECT stock FROM producto WHERE id = ?', [item.id]);
+            if (stockResult[0].stock < 0) {
+                throw new Error(`Stock insuficiente para el producto con ID ${item.id}`);
+            }
         }
 
-        // Marcar el pedido como pendiente en la cocina
-        await pool.query('INSERT INTO pedidos_cocina (id_compra, estado, Tipo_entrega) VALUES (?, ?, ?)', [id_compra, 'recibido', deliveryOption]);
+        await pool.query('INSERT INTO Bodega (id_compra, estado, Tipo_entrega) VALUES (?, ?, ?)', [id_compra, 'recibido', deliveryOption]);
 
         req.session.cart = []; // Vaciar el carrito después de la compra
         res.json({ success: true, message: 'Compra realizada con éxito.', roles: user.roles });
     } catch (error) {
         console.error(error);
-        res.json({ success: false, message: 'No se pudo realizar la compra.' });
+        res.json({ success: false, message: `No se pudo realizar la compra. ${error.message}` });
     }
 });
+
 
 router.get('/empleado', isLoggedIn, (req, res) => {
     res.render('links/empleados', { script: '' });
@@ -420,11 +431,11 @@ router.post('/entregado', isLoggedIn, async (req, res) => {
     }
 });
 
-router.get('/cocina', isLoggedIn, async (req, res) => {
+router.get('/bodega', isLoggedIn, async (req, res) => {
     try {
         const pedidosResult = await pool.query(`
             SELECT pc.id_compra, p.nombre, dc.cantidad
-            FROM pedidos_cocina pc
+            FROM Bodega pc
             JOIN detalle_compra dc ON pc.id_compra = dc.id_compra
             JOIN producto p ON dc.id_producto = p.id
             WHERE pc.estado = 'recibido'
@@ -438,10 +449,10 @@ router.get('/cocina', isLoggedIn, async (req, res) => {
             return acc;
         }, {});
 
-        res.render('links/cocina', { pedidos: Object.values(pedidos) });
+        res.render('links/bodega', { pedidos: Object.values(pedidos) });
     } catch (error) {
         console.error(error);
-        res.render('links/cocina', { message: 'Error al obtener los pedidos.' });
+        res.render('links/bodega', { message: 'Error al obtener los pedidos.' });
     }
 });
 
@@ -451,7 +462,7 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
 
     try {
         // Obtener el tipo de entrega del pedido
-        const tipoEntregaResult = await pool.query('SELECT Tipo_entrega FROM pedidos_cocina WHERE id_compra = ?', [id_compra]);
+        const tipoEntregaResult = await pool.query('SELECT Tipo_entrega FROM Bodega WHERE id_compra = ?', [id_compra]);
         const tipoEntrega = tipoEntregaResult[0].Tipo_entrega;
 
         if (tipoEntrega === 'domicilio') {
@@ -480,8 +491,7 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
 
             const { id: id_domiciliario } = domiciliarioDisponible;
 
-            // Marcar el pedido como listo en la cocina
-            await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
+            await pool.query('UPDATE Bodega SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
 
             // Ajustar la fecha y hora a tu zona horaria local
             const fechaEnvio = moment().tz('America/Bogota');
@@ -495,8 +505,8 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
 
             res.json({ success: true, message: 'Pedido marcado como listo y domiciliario asignado.' });
         } else if (tipoEntrega === 'tienda') {
-            // Marcar el pedido como listo en la cocina
-            await pool.query('UPDATE pedidos_cocina SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
+
+            await pool.query('UPDATE Bodega SET estado = ? WHERE id_compra = ?', ['listo', id_compra]);
 
             const fechaFinPreparacion = moment().tz('America/Bogota');
             const fechaFinPreparacionStr = fechaFinPreparacion.format('YYYY-MM-DD');
@@ -519,8 +529,8 @@ router.post('/marcar-pedido-listo', isLoggedIn, async (req, res) => {
 
 
 
-router.get('/cocina', isLoggedIn, async (req, res) => {
-    res.render('links/cocina')
+router.get('/bodega', isLoggedIn, async (req, res) => {
+    res.render('links/bodega')
 })
 
 
@@ -532,14 +542,14 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
         // Obtener todas las compras del cliente
         const comprasResult = await pool.query(`
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
-            pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
+            Bodega.estado as estado_bodega, Bodega.Tipo_entrega,
             domicilios.fecha_envio, domicilios.fecha_entrega,
             recogida_en_tienda.fecha_fin_preparacion, recogida_en_tienda.hora_fin_preparacion,
             recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
             cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono, 
             direcciones.direccionCliente as direccion
             FROM compras
-            LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
+            LEFT JOIN Bodega ON compras.id = Bodega.id_compra
             LEFT JOIN domicilios ON compras.id = domicilios.id_compra
             LEFT JOIN recogida_en_tienda ON compras.id = recogida_en_tienda.id_compra
             LEFT JOIN cliente ON compras.id_cliente = cliente.id
@@ -558,11 +568,11 @@ router.get('/consulta-pedido', isLoggedIn, async (req, res) => {
             let estado_enviado = false;
             let estado_entregado = false;
 
-            if (compra.estado_cocina === 'recibido' || compra.estado_cocina === 'listo') {
+            if (compra.estado_bodega === 'recibido' || compra.estado_bodega === 'listo') {
                 estado_recibido = true;
             }
 
-            if (compra.estado_cocina === 'listo') {
+            if (compra.estado_bodega === 'listo') {
                 estado_preparado = true;
             }
 
@@ -670,14 +680,14 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
     try {
         const comprasResult = await pool.query(`
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
-            pedidos_cocina.estado as estado_cocina, pedidos_cocina.Tipo_entrega,
+            Bodega.estado as estado_bodega, pedidos_bodega.Tipo_entrega,
             domicilios.fecha_envio, domicilios.fecha_entrega,
             recogida_en_tienda.fecha_fin_preparacion, recogida_en_tienda.hora_fin_preparacion,
             recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
             cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono, 
             direcciones.direccionCliente as direccion
             FROM compras
-            LEFT JOIN pedidos_cocina ON compras.id = pedidos_cocina.id_compra
+            LEFT JOIN pedidos_bodega ON compras.id = pedidos_bodega.id_compra
             LEFT JOIN domicilios ON compras.id = domicilios.id_compra
             LEFT JOIN recogida_en_tienda ON compras.id = recogida_en_tienda.id_compra
             LEFT JOIN cliente ON compras.id_cliente = cliente.id
@@ -691,11 +701,11 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
             let estado_enviado = false;
             let estado_entregado = false;
 
-            if (compra.estado_cocina === 'recibido' || compra.estado_cocina === 'listo') {
+            if (compra.estado_bodega === 'recibido' || compra.estado_bodega === 'listo') {
                 estado_recibido = true;
             }
 
-            if (compra.estado_cocina === 'listo') {
+            if (compra.estado_bodega === 'listo') {
                 estado_preparado = true;
             }
 
@@ -814,6 +824,43 @@ router.post('/renovar-licencia', isLoggedIn, async (req, res) => {
         res.json({ success: false, message: 'No se pudo renovar la licencia.' });
     }
 });
+
+router.get('/filter', isLoggedIn, async (req, res) => {
+    const { query, categoria } = req.query;
+
+    try {
+        let productos;
+
+        if (query && categoria) {
+            productos = await pool.query(`
+                SELECT * 
+                FROM producto 
+                WHERE nombre LIKE ? AND categoria = ?`,
+                [`%${query}%`, categoria]);
+        } else if (query) {
+            productos = await pool.query(`
+                SELECT * 
+                FROM producto 
+                WHERE nombre LIKE ?`,
+                [`%${query}%`]);
+        } else if (categoria) {
+            productos = await pool.query(`
+                SELECT * 
+                FROM producto 
+                WHERE categoria = ?`,
+                [categoria]);
+        } else {
+            productos = await pool.query('SELECT * FROM producto');
+        }
+
+        res.render('links/listUsers', { productos, query, categoria }); // Pasar valores actuales
+    } catch (error) {
+        console.error(error);
+        res.render('links/listUsers', { productos: [], query, categoria, message: 'Error al buscar productos.' });
+    }
+});
+
+
 
 
 

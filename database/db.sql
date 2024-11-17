@@ -12,7 +12,7 @@ CREATE TABLE users (
     PRIMARY KEY (id),
     unique(username)
 );
-ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'cocinero', 'cajero') DEFAULT 'usuario';
+ALTER TABLE users ADD COLUMN roles ENUM('usuario', 'admin', 'domiciliario', 'Bodega', 'cajero') DEFAULT 'usuario';
 
 ALTER TABLE users AUTO_INCREMENT = 1; 
 
@@ -34,13 +34,12 @@ ALTER TABLE direcciones AUTO_INCREMENT = 1;
 -- Tabla 'producto'
 CREATE TABLE producto (
     id INT PRIMARY KEY,
-    cantidad INT,
     urlimagen VARCHAR(255),
-    confirmaciondedisponibilidad VARCHAR(10),
     nombre VARCHAR(100),
     descripcion TEXT,
     precio DECIMAL(10,2),
-    categoria VARCHAR(50)
+    categoria ENUM('Antibióticos', 'Analgésicos y Antiinflamatorios', 'Antigripales y Resfriados', 'Antihipertensivos', 'Antidiabéticos', 'Vitaminas y Suplementos'),
+    stock INT
 );
 
 -- Tabla 'compras'
@@ -54,7 +53,7 @@ CREATE TABLE compras (
 );
 
 -- Tabla 'cocina'
-CREATE TABLE pedidos_cocina (
+CREATE TABLE Bodega (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_compra INT NOT NULL,
     estado VARCHAR(50) DEFAULT 'pendiente',
@@ -62,7 +61,7 @@ CREATE TABLE pedidos_cocina (
     FOREIGN KEY (id_compra) REFERENCES compras(id)
 );
 
-ALTER TABLE pedidos_cocina AUTO_INCREMENT = 1;
+ALTER TABLE Bodega AUTO_INCREMENT = 1;
 -- Tabla 'detalle_compra'
 CREATE TABLE detalle_compra (
     id INT PRIMARY KEY AUTO_INCREMENT,

@@ -68,4 +68,6 @@ Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
   }
 });
 
+Handlebars.registerHelper('eq', (a, b) => a === b);
+
 module.exports = Handlebars;

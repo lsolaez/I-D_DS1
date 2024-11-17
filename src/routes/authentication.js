@@ -77,8 +77,8 @@ router.post('/signin', [
                 return res.redirect('/links');
             } else if (user.roles === 'usuario') {
                 return res.redirect('/links/listUsers');
-            } else if (user.roles === 'cocinero') {
-                return res.redirect('/links/cocina');
+            } else if (user.roles === 'Bodega') {
+                return res.redirect('/links/bodega');
             } else if (user.roles === 'cajero') {
                 return res.redirect('/links/caja'); 
             } else if(user.roles === 'domiciliario'){

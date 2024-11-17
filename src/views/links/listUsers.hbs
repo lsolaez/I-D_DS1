@@ -89,6 +89,39 @@
         </div>
     </div>
 </div>
+<div class="container mb-4">
+    <form id="filterForm" action="/links/filter" method="GET" class="row g-2 align-items-center">
+        <!-- Campo de texto para buscar por nombre -->
+        <div class="col-md-5">
+            <input 
+                type="text" 
+                name="query" 
+                class="form-control" 
+                placeholder="Buscar productos por nombre" 
+                value="{{query}}">
+        </div>
+        <!-- Dropdown de categorías -->
+        <div class="col-md-4">
+            <select name="categoria" class="form-select">
+                <option value="">Seleccione una categoría</option>
+                <option value="antibioticos" {{#if (eq categoria "antibioticos")}}selected{{/if}}>Antibióticos</option>
+                <option value="analgesicos" {{#if (eq categoria "analgesicos")}}selected{{/if}}>Analgésicos y Antiinflamatorios</option>
+                <option value="antigripales" {{#if (eq categoria "antigripales")}}selected{{/if}}>Antigripales y Resfriados</option>
+                <option value="antihipertensivos" {{#if (eq categoria "antihipertensivos")}}selected{{/if}}>Antihipertensivos</option>
+                <option value="antidiabeticos" {{#if (eq categoria "antidiabeticos")}}selected{{/if}}>Antidiabéticos</option>
+                <option value="vitaminas" {{#if (eq categoria "vitaminas")}}selected{{/if}}>Vitaminas y Suplementos</option>
+            </select>
+        </div>
+        <!-- Botones de búsqueda y volver -->
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-50">Buscar</button>
+            <a href="/links/listUsers" class="btn btn-secondary w-50">Volver</a>
+        </div>
+    </form>
+</div>
+
+
+
 <div class="container p-4" style="max-height: 80vh; overflow-y: auto;">
     <div class="row">
         {{#each productos}}
@@ -96,11 +129,12 @@
             <div class="card text-center">
                 <div class="card-body">
                     <img src="{{urlimagen}}" alt="" style="width: 100px; height: 100px;">
+                    <p class="m-2">{{nombre}}</p>
                     <p class="m-2">{{descripcion}}</p>
                     <p class="m-2">Precio: {{precio}}</p>
                     <p class="m-2">Categoria: {{categoria}}</p>
-                    <p class="m-2">{{confirmaciondedisponibilidad}}</p>
-                    {{#ifCond confirmaciondedisponibilidad '==' 'Disponible'}}
+                    <p class="m-2">Unidades disponibles: {{stock}}</p>
+                    {{#ifCond stock '!=' '0'}}
                     <button class="btn btn-success add-to-cart-btn" data-codigo="{{id}}">Comprar</button>
                     {{/ifCond}}
                 </div>
@@ -110,7 +144,6 @@
         <div class="col-md-4 mx-auto mb-3"> <!-- Clase mb-3 añadida para margen inferior -->
             <div class="card card-body text-center">
                 <p>No hay productos guardados todavía.</p>
-                <a href="/links/add" class="btn btn-primary">Crear uno!</a>
             </div>
         </div>
         {{/each}}
