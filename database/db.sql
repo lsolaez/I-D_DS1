@@ -1,5 +1,5 @@
-CREATE DATABASE bakery;
-USE bakery;
+CREATE DATABASE Droguery;
+USE Droguery;
 
 
 -- Tabla 'usuario'
@@ -38,7 +38,7 @@ CREATE TABLE producto (
     nombre VARCHAR(100),
     descripcion TEXT,
     precio DECIMAL(10,2),
-    categoria ENUM('Antibióticos', 'Analgésicos y Antiinflamatorios', 'Antigripales y Resfriados', 'Antihipertensivos', 'Antidiabéticos', 'Vitaminas y Suplementos'),
+    categoria ENUM('antibióticos', 'analgésicos', 'antigripales', 'antihipertensivos', 'antidiabéticos', 'vitaminas'),
     stock INT
 );
 
