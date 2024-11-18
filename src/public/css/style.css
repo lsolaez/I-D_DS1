@@ -31,7 +31,7 @@ font-family: 'Oswald', sans-serif;
     height: 100%;
     padding-top: 8rem;
     padding-bottom: 8rem;
-    background: url('/img/ppp.avif');
+    background: url('/src/public/img/fondo.jpg');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;

@@ -1,6 +1,6 @@
 # Plataforma de Farmacia Avanzada
 
-![Logo de Farmacia](sandbox:/mnt/data/png-transparent-logo-pharmacy-pills-miscellaneous-trademark-pharmaceutical-drug-thumbnail.png)
+
 
 ## Descripción del Proyecto
 
