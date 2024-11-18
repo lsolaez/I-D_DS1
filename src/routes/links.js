@@ -746,6 +746,7 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
                 total: compra.total,
                 productos: productosResult,
                 nombre_cliente: compra.nombre_cliente,
+                telefono: compra.telefono,
                 direccion: compra.direccion
             };
         }));
