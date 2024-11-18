@@ -71,7 +71,7 @@ Esta solución está diseñada para mejorar la experiencia del cliente, optimiza
 ### **Pasos para Instalar**
 1. Clona este repositorio:
    ```bash
-   git clone https://github.com/usuario/proyecto-farmacia.git
+   git clone https://github.com/lsolaez/I-D_DS1.git
    ```
 2. Instala las dependencias:
    ```bash
@@ -87,7 +87,7 @@ Esta solución está diseñada para mejorar la experiencia del cliente, optimiza
    ```bash
    npm start
    ```
-6. Accede a la aplicación en `http://localhost:3000`.
+6. Accede a la aplicación en `http://localhost:4000`.
 
 ---
 
