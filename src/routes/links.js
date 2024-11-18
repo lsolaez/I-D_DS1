@@ -680,14 +680,14 @@ router.get('/pedidos', isLoggedIn, async (req, res) => {
     try {
         const comprasResult = await pool.query(`
             SELECT compras.id, compras.fecha_compra, compras.hora_compra, compras.total, 
-            Bodega.estado as estado_bodega, pedidos_bodega.Tipo_entrega,
+            Bodega.estado as estado_bodega, Bodega.Tipo_entrega,
             domicilios.fecha_envio, domicilios.fecha_entrega,
             recogida_en_tienda.fecha_fin_preparacion, recogida_en_tienda.hora_fin_preparacion,
             recogida_en_tienda.fecha_recogida, recogida_en_tienda.hora_recogida,
             cliente.nombre_completo AS nombre_cliente, cliente.telefono AS telefono, 
             direcciones.direccionCliente as direccion
             FROM compras
-            LEFT JOIN pedidos_bodega ON compras.id = pedidos_bodega.id_compra
+            LEFT JOIN Bodega ON compras.id = Bodega.id_compra
             LEFT JOIN domicilios ON compras.id = domicilios.id_compra
             LEFT JOIN recogida_en_tienda ON compras.id = recogida_en_tienda.id_compra
             LEFT JOIN cliente ON compras.id_cliente = cliente.id
