@@ -17,12 +17,24 @@ font-family: 'Oswald', sans-serif;
 }
 
 .navbar {
-    background: black !important;
+  background-color: #a3c7d7;
+  background: linear-gradient(to bottom, rgba(163, 199, 215, 1), rgba(163, 199, 215, 0));
+    z-index: 10;
 }
 
 .nav-link {
-    color: #fff !important;
+    color: white !important;
+    display: flex;
+    font-size: 1.5rem;
+    justify-content: end;
+    text-shadow: 
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
 }
+
+
 
 .masthead {
     color: white;
@@ -31,10 +43,17 @@ font-family: 'Oswald', sans-serif;
     height: 100%;
     padding-top: 8rem;
     padding-bottom: 8rem;
-    background: url('/src/public/img/fondo.jpg');
+    background: url('/img/fondo.jpg');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    text-shadow: 
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000,
+    0 0 5px #000; 
+
 }
 
 .masthead h1 {
@@ -180,4 +199,14 @@ background-color: #3dd445;
 border-left: 17px solid #3dd445;	
 }
 
+.navbar-brand {
+  font-size: 1.5rem; 
+  font-weight: bold; 
+  color: #FFFFFF;
+  text-shadow: 
+  -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+}
   
